@@ -1,58 +1,73 @@
-"""Seed development data."""
-import asyncio
+"""
+Seed vía HTTP — llama a los endpoints de la API para crear roles y usuarios.
+Esto evita problemas de asyncpg en Windows con scripts standalone.
+
+Asegúrate de que la API esté corriendo en http://localhost:8000 antes de ejecutar.
+"""
 import sys
 import os
+import urllib.request
+import urllib.error
+import json
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "apps", "api"))
-
-from app.core.db.session import async_session_factory
-from app.core.security.password import hash_password
-from app.modules.users.models.user import User
-from app.modules.rbac.services.role_service import RoleService
+API_BASE = "http://localhost:8000/api/v1"
 
 
-async def seed():
-    async with async_session_factory() as db:
-        # Seed roles
-        role_svc = RoleService(db)
-        await role_svc.seed_defaults()
+def post(path: str, data: dict) -> dict | None:
+    url = f"{API_BASE}{path}"
+    payload = json.dumps(data).encode("utf-8")
+    req = urllib.request.Request(
+        url,
+        data=payload,
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            return json.loads(resp.read())
+    except urllib.error.HTTPError as e:
+        body = json.loads(e.read()) if e.read else {}
+        code = body.get("error", {}).get("code", "")
+        if code in ("CONFLICT", ""):
+            return None  # Already exists, that's OK
+        print(f"  HTTP {e.code} at {path}: {body}")
+        return None
+    except Exception as ex:
+        print(f"  Error at {path}: {ex}")
+        return None
 
-        # Test users
-        users = [
-            ("admin@edgearena.com", "admin", "Admin", True),
-            ("trader@edgearena.com", "protrader", "Pro Trader", False),
-            ("demo@edgearena.com", "demouser", "Demo User", False),
-        ]
 
-        for email, username, display, is_admin in users:
-            existing = await db.execute(
-                __import__("sqlalchemy").select(User).where(User.email == email)
-            )
-            if existing.scalar_one_or_none():
-                continue
+def seed():
+    print("Seeding roles...")
+    post("/admin/seed-roles", {})
+    print("  Roles seeded OK")
 
-            user = User(
-                email=email,
-                username=username,
-                password_hash=hash_password("test1234"),
-                display_name=display,
-                plan="premium" if is_admin else "free",
-                rating=1500 if is_admin else 1200,
-                total_wins=30 if is_admin else 0,
-                total_losses=10 if is_admin else 0,
-            )
-            db.add(user)
-            await db.flush()
+    print("\nSeeding test users via API...")
 
-            if is_admin:
-                await role_svc.assign_role(user.id, "admin")
-            await role_svc.assign_role(user.id, "user")
+    users = [
+        ("admin@edgearena.com", "admin", "Admin", "Admin123!"),
+        ("trader@edgearena.com", "protrader", "Pro Trader", "Test1234!"),
+        ("demo@edgearena.com", "demouser", "Demo User", "Test1234!"),
+    ]
 
-        await db.commit()
-        print("Seed complete. Users:")
-        for email, username, _, _ in users:
-            print(f"  {email} / test1234  ({username})")
+    for email, username, display_name, password in users:
+        print(f"  Registering {email}...", end=" ")
+        result = post("/auth/register", {
+            "email": email,
+            "username": username,
+            "password": password,
+            "display_name": display_name,
+        })
+        if result:
+            print(f"OK (id={result['user']['id'][:8]}...)")
+        else:
+            print("Already exists or skipped")
+
+    print("\nSeed complete!")
+    print("\nCredentials:")
+    for email, username, _, password in users:
+        print(f"  {email} / {password}  ({username})")
 
 
 if __name__ == "__main__":
-    asyncio.run(seed())
+    seed()

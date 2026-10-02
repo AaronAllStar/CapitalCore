@@ -28,10 +28,18 @@ class User(Base):
     total_tournaments: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     total_backtests: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
 
-    # Relationships
-    roles = relationship("UserRole", back_populates="user", lazy="selectin", cascade="all, delete-orphan")
+    # Relationships — roles usa la tabla de asociación pura (sin columna `id`)
+    # La definición completa de foreign_keys está en role.py (mapeo imperativo de UserRole)
+    roles = relationship(
+        "UserRole",
+        back_populates="user",
+        lazy="selectin",
+        cascade="all, delete-orphan",
+    )
     strategies = relationship("Strategy", back_populates="user", lazy="selectin", cascade="all, delete-orphan")
     subscription = relationship("Subscription", back_populates="user", lazy="selectin", uselist=False)
+
+
 
     @property
     def plan(self) -> str:

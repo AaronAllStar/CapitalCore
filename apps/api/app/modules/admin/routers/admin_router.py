@@ -9,7 +9,25 @@ from app.modules.strategies.models.strategy import Strategy
 from app.modules.backtest.models.backtest_job import BacktestJob
 from app.modules.tournaments.models.tournament import Tournament
 
+from app.modules.rbac.services.role_service import RoleService
+from app.core.config import get_settings
+
 router = APIRouter()
+_settings = get_settings()
+
+
+@router.post("/seed-roles", include_in_schema=False)
+async def seed_roles(db: AsyncSession = Depends(get_session)):
+    """
+    Inicializa los roles y permisos por defecto.
+    Solo disponible en entorno de desarrollo.
+    """
+    if _settings.ENVIRONMENT != "development":
+        from fastapi import HTTPException
+        raise HTTPException(status_code=403, detail="Only available in development")
+    role_svc = RoleService(db)
+    await role_svc.seed_defaults()
+    return {"message": "Roles seeded successfully"}
 
 
 @router.get("/stats")

@@ -1,6 +1,13 @@
+"""
+Módulo RBAC — Roles, Permisos y asociación User↔Role.
+
+UserRole usa mapeo imperativo sobre Base.registry para evitar
+heredar columnas de Base (id, created_at, updated_at).
+Post-migración a1b2c3d4e5f6, la tabla user_roles tiene PK (user_id, role_id).
+"""
 import uuid
 import enum
-from sqlalchemy import String, ForeignKey, Enum as SAEnum, Table, Column
+from sqlalchemy import String, ForeignKey, Table, Column
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.db.base import Base
@@ -43,7 +50,8 @@ class PermissionEnum(str, enum.Enum):
     ADMIN_ANALYTICS = "admin:analytics"
 
 
-# Role → Permission mapping table
+# ─── Tablas de asociación puras ───────────────────────────────────────────────
+
 role_permissions_table = Table(
     "role_permissions",
     Base.metadata,
@@ -51,6 +59,16 @@ role_permissions_table = Table(
     Column("permission_id", UUID(as_uuid=True), ForeignKey("permissions.id", ondelete="CASCADE"), primary_key=True),
 )
 
+# Tabla user_roles post-migración: PK compuesta (user_id, role_id), sin columna id
+_user_roles_table = Table(
+    "user_roles",
+    Base.metadata,
+    Column("user_id", UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), primary_key=True),
+    Column("role_id", UUID(as_uuid=True), ForeignKey("roles.id", ondelete="CASCADE"), primary_key=True),
+)
+
+
+# ─── ORM Models ──────────────────────────────────────────────────────────────
 
 class Role(Base):
     __tablename__ = "roles"
@@ -67,14 +85,29 @@ class Permission(Base):
     description: Mapped[str | None] = mapped_column(String(255))
 
 
-class UserRole(Base):
-    __tablename__ = "user_roles"
+class UserRole:
+    """
+    Clase ORM para user_roles.
 
-    user_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), primary_key=True
-    )
-    role_id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), ForeignKey("roles.id", ondelete="CASCADE"), primary_key=True
-    )
-    user = relationship("User", back_populates="roles")
-    role = relationship("Role", lazy="selectin")
+    Mapeada imperativamente usando Base.registry para compartir el mismo
+    registry que User y Role, lo que permite relaciones ORM entre ellos.
+    PK compuesta (user_id, role_id) — sin columna id propia.
+    """
+    def __init__(self, user_id: uuid.UUID, role_id: uuid.UUID) -> None:
+        self.user_id = user_id
+        self.role_id = role_id
+
+    def __repr__(self) -> str:
+        return f"<UserRole user={self.user_id} role={self.role_id}>"
+
+
+# Registrar UserRole en el mismo registry de Base usando mapeo imperativo.
+# Esto permite relacionarlo con User y Role sin heredar las columnas de Base.
+Base.registry.map_imperatively(
+    UserRole,
+    _user_roles_table,
+    properties={
+        "user": relationship("User", back_populates="roles", foreign_keys=[_user_roles_table.c.user_id]),
+        "role": relationship("Role", lazy="selectin", foreign_keys=[_user_roles_table.c.role_id]),
+    },
+)
