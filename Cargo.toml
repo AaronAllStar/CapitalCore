@@ -1,0 +1,17 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/edge-core",
+]
+
+[workspace.package]
+edition = "2021"
+version = "0.1.0"
+authors = ["EdgeArena Team"]
+license = "MIT OR Apache-2.0"
+rust-version = "1.80"
+
+[workspace.dependencies]
+serde = { version = "1.0", default-features = false, features = ["derive", "alloc"] }
+thiserror = "1.0"
+proptest = "1.4"
