@@ -41,10 +41,10 @@
 | **TASK-003** | Set up ADR directory and create first 4 ADRs (0001–0004) from audit | **DONE** | 2026-10-02 |
 
 ### Phase 2 — Domain Model
-| Task ID | Goal | Status | Assigned |
+| Task ID | Goal | Status | Assigned / Completed |
 |---|---|---|---|
-| **TASK-004** | Initialize Cargo workspace with `edge-core` crate containing monetary types | **IN_PROGRESS** | Implementer |
-| **TASK-005** | Create `edge-domain` crate with core domain types (`FinancialEvent`, `Decision`, `AuditEvent`) | NOT_STARTED | Implementer |
+| **TASK-004** | Initialize Cargo workspace with `edge-core` crate containing monetary types | **DONE** | 2026-10-02 |
+| **TASK-005** | Create `edge-domain` crate with core domain types (`FinancialEvent`, `Decision`, `AuditEvent`) | **IN_PROGRESS** | Implementer |
 | **TASK-006** | Create `edge-events` crate with event bus traits and in-memory implementation | NOT_STARTED | Implementer |
 | **TASK-007** | Create `edge-audit` crate with append-only audit log trait and in-memory implementation | NOT_STARTED | Implementer |
 
