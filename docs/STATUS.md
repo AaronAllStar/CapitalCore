@@ -1,8 +1,9 @@
 # EdgeArena Migration Status
 
 ## Current Status Overview
-- **Active Phase**: Phase 1 — Audit & architecture
-- **Active Task**: TASK-001 — Create `docs/STATUS.md`
+- **Active Phase**: Phase 2 — Domain model
+- **Completed Phases**: Phase 1 — Audit & architecture
+- **Next Task**: TASK-004 — Initialize Cargo workspace with `edge-core` crate
 - **Rule**: Only the phase marked `ACTIVE` may be worked on (per [AGENTS.md](file:///c:/Users/damed/Downloads/edge-arena/docs/AGENTS.md)).
 
 ---
@@ -11,8 +12,8 @@
 
 | Phase | Name | Status | Started | Completed | Notes |
 |---|---|---|---|---|---|
-| 1 | Audit & architecture | **ACTIVE** | 2026-10-02 | — | Full codebase audit complete; establishing baseline documentation and ADRs. |
-| 2 | Domain model | NOT_STARTED | — | — | Workspace init, monetary types, core domain types, audit/event bus abstractions. |
+| 1 | Audit & architecture | **COMPLETED** | 2026-10-02 | 2026-10-02 | Audit complete, legacy code frozen in `legacy/api/`, ADRs 0001–0004 approved. |
+| 2 | Domain model | **ACTIVE** | 2026-10-02 | — | Workspace init (`edge-core`, `edge-domain`, `edge-events`, `edge-audit`). |
 | 3 | Golden datasets | NOT_STARTED | — | — | Golden test formats, dataset runners, CI pipeline with quality gates. |
 | 4 | Core | NOT_STARTED | — | — | SQLx storage, Argon2id/Ed25519 auth, observability, rate limiting & error models. |
 | 5 | Event engine | NOT_STARTED | — | — | Validation, normalization, in-memory event processing pipeline. |
@@ -30,15 +31,24 @@
 
 ---
 
-## Phase 1 Tasks
+## Task History
 
+### Phase 1 — Audit & Architecture
+| Task ID | Goal | Status | Completed |
+|---|---|---|---|
+| **TASK-001** | Create `docs/STATUS.md` with phase tracking and mark Phase 1 as ACTIVE | **DONE** | 2026-10-02 |
+| **TASK-002** | Freeze legacy Python code as a read-only reference in `legacy/api/` | **DONE** | 2026-10-02 |
+| **TASK-003** | Set up ADR directory and create first 4 ADRs (0001–0004) from audit | **DONE** | 2026-10-02 |
+
+### Phase 2 — Domain Model
 | Task ID | Goal | Status | Assigned |
 |---|---|---|---|
-| **TASK-001** | Create `docs/STATUS.md` with phase tracking and mark Phase 1 as ACTIVE | **IN_PROGRESS** | Implementer |
-| **TASK-002** | Freeze legacy Python code as a read-only reference in `legacy/api/` | NOT_STARTED | Implementer |
-| **TASK-003** | Set up ADR directory and create first 4 ADRs (0001–0004) from audit | NOT_STARTED | Implementer |
+| **TASK-004** | Initialize Cargo workspace with `edge-core` crate containing monetary types | **IN_PROGRESS** | Implementer |
+| **TASK-005** | Create `edge-domain` crate with core domain types (`FinancialEvent`, `Decision`, `AuditEvent`) | NOT_STARTED | Implementer |
+| **TASK-006** | Create `edge-events` crate with event bus traits and in-memory implementation | NOT_STARTED | Implementer |
+| **TASK-007** | Create `edge-audit` crate with append-only audit log trait and in-memory implementation | NOT_STARTED | Implementer |
 
 ---
 
 ## Change Log
-- **2026-10-02**: Initialized `docs/STATUS.md` under TASK-001; Phase 1 marked ACTIVE.
+- **2026-10-02**: Completed TASK-001 (`docs/STATUS.md`), TASK-002 (`legacy/api` frozen snapshot), and TASK-003 (`docs/adr/0001` through `0004`). Transitioned Phase 1 → COMPLETED, Phase 2 → ACTIVE.
