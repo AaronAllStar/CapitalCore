@@ -1,0 +1,15 @@
+[package]
+name = "edge-events"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+edge-core = { path = "../edge-core" }
+edge-domain = { path = "../edge-domain" }
+thiserror = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true }
+chrono = { workspace = true }
