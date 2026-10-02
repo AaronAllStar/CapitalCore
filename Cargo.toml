@@ -4,6 +4,7 @@ members = [
     "crates/edge-core",
     "crates/edge-domain",
     "crates/edge-events",
+    "crates/edge-audit",
 ]
 
 [workspace.package]

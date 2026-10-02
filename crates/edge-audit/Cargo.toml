@@ -1,0 +1,18 @@
+[package]
+name = "edge-audit"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+edge-core = { path = "../edge-core" }
+edge-domain = { path = "../edge-domain" }
+chrono = { workspace = true }
+uuid = { workspace = true }
+thiserror = { workspace = true }
+serde = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true }
+proptest = { workspace = true }
