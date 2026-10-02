@@ -44,8 +44,8 @@
 | Task ID | Goal | Status | Assigned / Completed |
 |---|---|---|---|
 | **TASK-004** | Initialize Cargo workspace with `edge-core` crate containing monetary types | **DONE** | 2026-10-02 |
-| **TASK-005** | Create `edge-domain` crate with core domain types (`FinancialEvent`, `Decision`, `AuditEvent`) | **IN_PROGRESS** | Implementer |
-| **TASK-006** | Create `edge-events` crate with event bus traits and in-memory implementation | NOT_STARTED | Implementer |
+| **TASK-005** | Create `edge-domain` crate with core domain types (`FinancialEvent`, `Decision`, `AuditEvent`) | **DONE** | 2026-10-02 |
+| **TASK-006** | Create `edge-events` crate with event bus traits and in-memory implementation | **IN_PROGRESS** | Implementer |
 | **TASK-007** | Create `edge-audit` crate with append-only audit log trait and in-memory implementation | NOT_STARTED | Implementer |
 
 ---
