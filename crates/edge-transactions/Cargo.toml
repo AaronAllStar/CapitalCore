@@ -1,0 +1,22 @@
+[package]
+name = "edge-transactions"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+edge-core = { path = "../edge-core" }
+edge-domain = { path = "../edge-domain" }
+edge-events = { path = "../edge-events" }
+edge-audit = { path = "../edge-audit" }
+edge-security = { path = "../edge-security" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+uuid = { workspace = true }
+chrono = { workspace = true }
+tokio = { workspace = true }
+
+[dev-dependencies]
+proptest = { workspace = true }

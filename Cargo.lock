@@ -541,6 +541,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "edge-transactions"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "edge-audit",
+ "edge-core",
+ "edge-domain",
+ "edge-events",
+ "edge-security",
+ "proptest",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.69",
+ "tokio",
+ "uuid",
+]
+
+[[package]]
 name = "either"
 version = "1.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
