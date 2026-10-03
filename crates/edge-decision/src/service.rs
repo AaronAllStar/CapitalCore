@@ -10,6 +10,8 @@ use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 use std::sync::Arc;
 
+use crate::arbitration::{ArbitrationStrategy, MostRestrictive};
+
 /// Full decision outcome packet containing decision, reasons, features, and audit trail.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct DecisionOutcome {
@@ -28,10 +30,11 @@ pub struct DecisionService {
     feature_engine: Arc<FeatureEngine>,
     rule_engine: Arc<RuleEngine>,
     audit_log: Arc<dyn AuditLog>,
+    arbitration: Arc<dyn ArbitrationStrategy>,
 }
 
 impl DecisionService {
-    /// Constructs a new `DecisionService`.
+    /// Constructs a new `DecisionService` with default `MostRestrictive` arbitration.
     pub fn new(
         feature_engine: Arc<FeatureEngine>,
         rule_engine: Arc<RuleEngine>,
@@ -41,7 +44,15 @@ impl DecisionService {
             feature_engine,
             rule_engine,
             audit_log,
+            arbitration: Arc::new(MostRestrictive),
         }
+    }
+
+    /// Sets a custom decision arbitration strategy.
+    #[must_use]
+    pub fn with_arbitration(mut self, strategy: Arc<dyn ArbitrationStrategy>) -> Self {
+        self.arbitration = strategy;
+        self
     }
 
     /// Evaluates a financial event, computing features, resolving rules, and persisting audit records.
@@ -64,10 +75,14 @@ impl DecisionService {
             rule_versions.insert(m.rule_name.clone(), "1.0.0".to_string());
         }
 
+        let final_decision = self
+            .arbitration
+            .arbitrate(&eval_result.matches, Decision::Allow);
+
         let audit = AuditEvent::new(
             AuditId::new(),
             event.event_id(),
-            eval_result.final_decision,
+            final_decision,
             eval_result.reasons.clone(),
             feature_versions,
             rule_versions,
@@ -82,7 +97,7 @@ impl DecisionService {
             .map_err(|e| DecisionError::Audit(e.to_string()))?;
 
         Ok(DecisionOutcome {
-            decision: eval_result.final_decision,
+            decision: final_decision,
             reasons: eval_result.reasons,
             audit_event: audit,
             features_snapshot: features,
