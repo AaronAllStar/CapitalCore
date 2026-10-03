@@ -8,16 +8,20 @@
 
 pub mod dlq;
 pub mod error;
+pub mod event_bridge;
 pub mod queue;
 pub mod retry;
+pub mod supervisor;
 pub mod worker;
 
 pub use dlq::{DeadLetterItem, DeadLetterQueue, InMemoryDeadLetterQueue};
 pub use error::WorkerError;
+pub use event_bridge::QueueingEventHandler;
 pub use queue::{
     InMemoryWorkerQueue, QueueConsumer, QueueProducer, WorkerMessage, WorkerQueueProducer,
 };
 pub use retry::RetryPolicy;
+pub use supervisor::WorkerSupervisor;
 pub use worker::{EventWorker, TaskHandler, WorkerStats};
 
 #[cfg(test)]
@@ -225,5 +229,59 @@ mod tests {
         // Signal shutdown
         shutdown_tx.send(true).unwrap();
         handle.await.unwrap();
+    }
+
+    #[tokio::test]
+    async fn test_worker_supervisor_concurrency_and_shutdown() {
+        let queue = Arc::new(InMemoryWorkerQueue::new(50));
+        let handler = Arc::new(MockTaskHandler::always_succeed());
+        let dlq = Arc::new(InMemoryDeadLetterQueue::new());
+        let policy = RetryPolicy::default();
+        let worker = Arc::new(EventWorker::new(handler, policy, dlq));
+
+        let producer = queue.producer();
+        for _ in 0..20 {
+            producer.send(make_test_event()).await.unwrap();
+        }
+
+        let mut supervisor = WorkerSupervisor::new(worker.clone(), queue.clone(), 4);
+        supervisor.start();
+        assert_eq!(supervisor.active_workers(), 4);
+
+        // Allow concurrent workers to consume all 20 messages
+        tokio::time::sleep(Duration::from_millis(80)).await;
+        assert_eq!(worker.stats().processed.load(Ordering::SeqCst), 20);
+
+        let shutdown_res = supervisor.shutdown(Duration::from_millis(500)).await;
+        assert!(shutdown_res.is_ok());
+        assert_eq!(supervisor.active_workers(), 0);
+    }
+
+    #[tokio::test]
+    async fn test_event_bus_bridge_integration() {
+        use edge_events::{EventBus, InMemoryEventBusBuilder};
+
+        let queue = Arc::new(InMemoryWorkerQueue::new(20));
+        let producer = Arc::new(queue.producer()) as Arc<dyn QueueProducer>;
+        let bridge = Arc::new(QueueingEventHandler::new(producer, "bridge_handler"));
+
+        let bus = InMemoryEventBusBuilder::new().register(bridge).build();
+
+        // Publish event onto bus
+        let ev = make_test_event();
+        let publish_res = bus.publish(&ev).await;
+        assert!(publish_res.is_ok());
+
+        // Worker consumes from queue
+        let handler = Arc::new(MockTaskHandler::always_succeed());
+        let dlq = Arc::new(InMemoryDeadLetterQueue::new());
+        let worker = EventWorker::new(handler, RetryPolicy::default(), dlq);
+
+        let msg = queue.recv().await.unwrap().expect("message must be queued");
+        assert_eq!(msg.event.event_id(), ev.event_id());
+
+        let process_res = worker.process_message(msg).await;
+        assert!(process_res.is_ok());
+        assert_eq!(worker.stats().processed.load(Ordering::SeqCst), 1);
     }
 }
