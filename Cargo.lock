@@ -513,6 +513,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "edge-rules"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "edge-core",
+ "edge-domain",
+ "proptest",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.69",
+ "uuid",
+]
+
+[[package]]
 name = "edge-security"
 version = "0.1.0"
 dependencies = [
