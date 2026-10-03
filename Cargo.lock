@@ -546,10 +546,16 @@ dependencies = [
  "criterion",
  "edge-audit",
  "edge-core",
+ "edge-decision",
  "edge-domain",
  "edge-events",
+ "edge-features",
+ "edge-ml",
+ "edge-rules",
+ "edge-transactions",
  "serde",
  "serde_json",
+ "tokio",
  "uuid",
 ]
 
