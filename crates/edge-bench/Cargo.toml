@@ -10,12 +10,23 @@ edge-core = { path = "../edge-core" }
 edge-domain = { path = "../edge-domain" }
 edge-audit = { path = "../edge-audit" }
 edge-events = { path = "../edge-events" }
+edge-transactions = { path = "../edge-transactions" }
+edge-rules = { path = "../edge-rules" }
+edge-features = { path = "../edge-features" }
+edge-decision = { path = "../edge-decision" }
+edge-ml = { path = "../edge-ml" }
 chrono = { workspace = true }
 uuid = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 criterion = { workspace = true }
+tokio = { workspace = true }
 
 [[bench]]
 name = "bench_core"
 harness = false
+
+[[bench]]
+name = "bench_pipeline"
+harness = false
+
