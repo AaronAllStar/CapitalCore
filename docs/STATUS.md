@@ -1,9 +1,9 @@
 # EdgeArena Migration Status
 
 ## Current Status Overview
-- **Active Phase**: Phase 6 — Rules
-- **Completed Phases**: Phase 1 — Audit & architecture, Phase 2 — Domain model, Phase 3 — Golden datasets, Phase 4 — Core infrastructure, Phase 5 — Event engine
-- **Next Task**: TASK-018 — Create `edge-rules` crate with rule AST, evaluation context, condition matching, and rule set execution
+- **Active Phase**: Phase 7 — Features
+- **Completed Phases**: Phase 1 — Audit & architecture, Phase 2 — Domain model, Phase 3 — Golden datasets, Phase 4 — Core infrastructure, Phase 5 — Event engine, Phase 6 — Rules engine
+- **Next Task**: TASK-020 — Create `edge-features` crate with real-time sliding windows, aggregations, and feature extraction pipeline
 - **Rule**: Only the phase marked `ACTIVE` may be worked on (per [AGENTS.md](file:///c:/Users/damed/Downloads/edge-arena/docs/AGENTS.md)).
 
 ---
@@ -17,8 +17,8 @@
 | 3 | Golden datasets | **COMPLETED** | 2026-10-02 | 2026-10-02 | Golden datasets (`001_baseline`), runner (`cargo test --test golden`), CI workflow, criterion benchmarks. |
 | 4 | Core | **COMPLETED** | 2026-10-02 | 2026-10-02 | `edge-storage` (SQLx), `edge-auth` (Ed25519/Argon2id), `edge-observability`, `edge-security`. 48 tests passing. |
 | 5 | Event engine | **COMPLETED** | 2026-10-02 | 2026-10-02 | `edge-transactions` validation, normalization, deduplication, batching, and pipeline. 55 tests passing. |
-| 6 | Rules | **ACTIVE** | 2026-10-02 | — | Rule engine, AST/interpreter, deterministic rule evaluation (`edge-rules`). |
-| 7 | Features | NOT_STARTED | — | — | Real-time feature calculation, aggregations, sliding windows. |
+| 6 | Rules | **COMPLETED** | 2026-10-02 | 2026-10-02 | `edge-rules` AST, evaluation context, condition matching, repository, and audit explanations. 62 tests passing. |
+| 7 | Features | **ACTIVE** | 2026-10-02 | — | Real-time feature calculation, integer aggregations, sliding windows (`edge-features`). |
 | 8 | Decision | NOT_STARTED | — | — | Decision engine (ALLOW, REVIEW, BLOCK, ESCALATE), immutable audit generation. |
 | 9 | API | NOT_STARTED | — | — | Thin Axum API layer, JWT middleware, transaction submission, OpenAPI spec. |
 | 10 | Workers/events | NOT_STARTED | — | — | Async workers, queue evaluation (Tokio tasks / NATS JetStream). |
@@ -71,10 +71,16 @@
 | **TASK-017** | Implement asynchronous transaction ingestion pipeline connecting validation, bus, and audit | **DONE** | 2026-10-02 |
 
 ### Phase 6 — Rules Engine
-| Task ID | Goal | Status | Assigned |
+| Task ID | Goal | Status | Completed |
 |---|---|---|---|
 | **TASK-018** | Create `edge-rules` crate with rule AST, evaluation context, condition matching, and rule set execution | **DONE** | 2026-10-02 |
-| **TASK-019** | Implement rule repository, deterministic priority ordering, and audit explanation generators | **IN_PROGRESS** | Implementer |
+| **TASK-019** | Implement rule repository, deterministic priority ordering, and audit explanation generators | **DONE** | 2026-10-02 |
+
+### Phase 7 — Features Engine
+| Task ID | Goal | Status | Assigned |
+|---|---|---|---|
+| **TASK-020** | Create `edge-features` crate with real-time sliding windows, aggregations, and feature extraction pipeline | **IN_PROGRESS** | Implementer |
+| **TASK-021** | Implement feature registry, state windowing, and determinism tests | NOT_STARTED | Implementer |
 
 ---
 
@@ -84,4 +90,5 @@
 - **2026-10-02**: Completed Phase 3 (TASK-008, TASK-009, TASK-010, TASK-011).
 - **2026-10-02**: Completed Phase 4 (TASK-012, TASK-013, TASK-014, TASK-015).
 - **2026-10-02**: Completed Phase 5 (TASK-016, TASK-017).
-- **2026-10-02**: Phase 6 (Rules Engine) activated; TASK-018 assigned.
+- **2026-10-02**: Completed Phase 6 (TASK-018, TASK-019).
+- **2026-10-02**: Phase 7 (Features Engine) activated; TASK-020 assigned.
