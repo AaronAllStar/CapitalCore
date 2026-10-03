@@ -696,6 +696,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "edge-workers"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "edge-audit",
+ "edge-core",
+ "edge-domain",
+ "edge-events",
+ "edge-observability",
+ "proptest",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.69",
+ "tokio",
+ "tracing",
+ "uuid",
+]
+
+[[package]]
 name = "either"
 version = "1.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"

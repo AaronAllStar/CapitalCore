@@ -1,0 +1,23 @@
+[package]
+name = "edge-workers"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+edge-core = { path = "../edge-core" }
+edge-domain = { path = "../edge-domain" }
+edge-events = { path = "../edge-events" }
+edge-audit = { path = "../edge-audit" }
+edge-observability = { path = "../edge-observability" }
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+chrono = { workspace = true }
+uuid = { workspace = true }
+tracing = { workspace = true }
+
+[dev-dependencies]
+proptest = { workspace = true }
