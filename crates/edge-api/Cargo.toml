@@ -28,5 +28,7 @@ edge-audit = { path = "../edge-audit" }
 edge-events = { path = "../edge-events" }
 edge-features = { path = "../edge-features" }
 edge-rules = { path = "../edge-rules" }
+edge-ml = { path = "../edge-ml" }
 proptest = { workspace = true }
+
 

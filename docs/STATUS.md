@@ -125,10 +125,10 @@
 | **TASK-035** | Profile and optimize latency bottlenecks, document p50/p99/p99.9 latency deltas in `docs/benchmarks.md` | **DONE** | 2026-10-02 |
 
 ### Phase 15 — Load/Stress
-| Task ID | Goal | Status | Assigned |
+| Task ID | Goal | Status | Assigned / Completed |
 |---|---|---|---|
-| **TASK-036** | Build concurrent load generator and stress test harness measuring TPS and latency under sustained pressure | **IN_PROGRESS** | Implementer |
-| **TASK-037** | Validate backpressure, queue saturation thresholds, and graceful degradation behavior under overload | NOT_STARTED | — |
+| **TASK-036** | Build concurrent load generator and stress test harness measuring TPS and latency under sustained pressure | **DONE** | 2026-10-02 |
+| **TASK-037** | Validate backpressure, queue saturation thresholds, and graceful degradation behavior under overload | **IN_PROGRESS** | Implementer |
 
 ### Phase 16 — Production Readiness
 | Task ID | Goal | Status | Assigned |
