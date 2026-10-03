@@ -1,0 +1,61 @@
+# syntax=docker/dockerfile:1.4
+# EdgeArena All-In-One Unified Container: Rust Core API + Next.js Web UI
+
+# --- Stage 1: Rust Builder ---
+FROM rust:1.80-bullseye AS rust-builder
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    pkg-config libssl-dev protobuf-compiler \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY Cargo.toml Cargo.lock rustfmt.toml clippy.toml deny.toml ./
+COPY crates ./crates
+COPY ml ./ml
+COPY golden ./golden
+
+RUN cargo build --release --bin edge-api
+RUN strip /app/target/release/edge-api
+
+# --- Stage 2: Next.js Web Builder ---
+FROM node:22-alpine AS web-builder
+WORKDIR /app
+
+RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
+
+COPY apps/web/package.json ./
+RUN pnpm install
+
+COPY apps/web ./
+ENV NEXT_PUBLIC_API_URL=http://localhost:8080
+RUN pnpm build
+
+# --- Stage 3: Unified Production Runtime ---
+FROM node:22-bullseye-slim AS runtime
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy Rust API binary
+COPY --from=rust-builder /app/target/release/edge-api /usr/local/bin/edge-api
+
+# Copy Next.js Standalone build
+WORKDIR /app/web
+COPY --from=web-builder /app/public ./public
+COPY --from=web-builder /app/.next/standalone ./
+COPY --from=web-builder /app/.next/static ./.next/static
+
+# Copy entrypoint script
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+EXPOSE 8080 3000
+
+ENV APP_ENV=production \
+    PORT=8080 \
+    HOST=0.0.0.0
+
+WORKDIR /app
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
