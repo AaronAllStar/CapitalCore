@@ -59,8 +59,8 @@
 ### Phase 4 — Core Infrastructure
 | Task ID | Goal | Status | Assigned |
 |---|---|---|---|
-| **TASK-012** | Create `edge-storage` crate with SQLx connection pool, migrations, and repository traits | **IN_PROGRESS** | Implementer |
-| **TASK-013** | Create `edge-auth` crate with JWT (Ed25519), password hashing (Argon2id), and RBAC | NOT_STARTED | Implementer |
+| **TASK-012** | Create `edge-storage` crate with SQLx connection pool, migrations, and repository traits | **DONE** | 2026-10-02 |
+| **TASK-013** | Create `edge-auth` crate with JWT (Ed25519), password hashing (Argon2id), and RBAC | **IN_PROGRESS** | Implementer |
 | **TASK-014** | Create `edge-observability` crate with tracing setup and health check infrastructure | NOT_STARTED | Implementer |
 | **TASK-015** | Create `edge-security` crate with input validation, rate limiting, and error response formatting | NOT_STARTED | Implementer |
 
