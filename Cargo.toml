@@ -9,6 +9,7 @@ members = [
     "crates/edge-storage",
     "crates/edge-auth",
     "crates/edge-observability",
+    "crates/edge-security",
 ]
 
 [workspace.package]
