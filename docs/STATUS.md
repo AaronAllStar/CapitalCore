@@ -1,9 +1,9 @@
 # EdgeArena Migration Status
 
 ## Current Status Overview
-- **Active Phase**: Phase 14 — Perf
-- **Completed Phases**: Phase 1 — Audit & architecture, Phase 2 — Domain model, Phase 3 — Golden datasets, Phase 4 — Core infrastructure, Phase 5 — Event engine, Phase 6 — Rules engine, Phase 7 — Features engine, Phase 8 — Decision engine, Phase 9 — API, Phase 10 — Workers/events, Phase 11 — ML training, Phase 12 — Rust inference, Phase 13 — Security hardening
-- **Next Task**: TASK-034 — Add Criterion end-to-end performance benchmarks for full ingestion-to-decision pipeline and feature sliding windows
+- **Active Phase**: Phase 15 — Load/stress
+- **Completed Phases**: Phase 1 — Audit & architecture, Phase 2 — Domain model, Phase 3 — Golden datasets, Phase 4 — Core infrastructure, Phase 5 — Event engine, Phase 6 — Rules engine, Phase 7 — Features engine, Phase 8 — Decision engine, Phase 9 — API, Phase 10 — Workers/events, Phase 11 — ML training, Phase 12 — Rust inference, Phase 13 — Security hardening, Phase 14 — Perf
+- **Next Task**: TASK-036 — Build concurrent load generator and stress test harness measuring TPS and latency under sustained pressure
 - **Rule**: Only the phase marked `ACTIVE` may be worked on (per [AGENTS.md](file:///c:/Users/damed/Downloads/edge-arena/docs/AGENTS.md)).
 
 ---
@@ -25,8 +25,8 @@
 | 11 | ML training | **COMPLETED** | 2026-10-02 | 2026-10-02 | Python training pipeline, feature schema alignment with `edge-features`, 99.6% accuracy fraud model, ONNX export. |
 | 12 | Rust inference | **COMPLETED** | 2026-10-02 | 2026-10-02 | `edge-ml` embedded inference engine, 100% parity with Python golden inferences, integrated into `edge-decision`. 5 tests passing. |
 | 13 | Security hardening | **COMPLETED** | 2026-10-02 | 2026-10-02 | Automated secret scrubber, security headers middleware, fuzzing targets, constant-time compare (`edge-security`). 15 tests passing. |
-| 14 | Perf | **ACTIVE** | 2026-10-02 | — | Criterion benchmark deltas, profiling, latency optimization (p99/p99.9). |
-| 15 | Load/stress | NOT_STARTED | — | — | End-to-end stress testing, concurrency thresholds, degradation behavior. |
+| 14 | Perf | **COMPLETED** | 2026-10-02 | 2026-10-02 | Criterion end-to-end benchmarks, micro-optimizations, p50/p99 latency distribution documented (`edge-bench`). |
+| 15 | Load/stress | **ACTIVE** | 2026-10-02 | — | End-to-end stress testing, concurrency thresholds, degradation behavior. |
 | 16 | Production readiness | NOT_STARTED | — | — | Deployment configs, operational runbooks, final verification. |
 
 ---
@@ -119,15 +119,15 @@
 | **TASK-033** | Audit cargo deny security licenses/advisories, dependency vetting, and constant-time secret comparison verification | **DONE** | 2026-10-02 |
 
 ### Phase 14 — Perf
-| Task ID | Goal | Status | Assigned / Completed |
+| Task ID | Goal | Status | Completed |
 |---|---|---|---|
 | **TASK-034** | Implement Criterion end-to-end performance benchmarks for full ingestion-to-decision pipeline, sliding windows, and ML inference | **DONE** | 2026-10-02 |
-| **TASK-035** | Profile and optimize latency bottlenecks, document p50/p99/p99.9 latency deltas in `docs/benchmarks.md` | **IN_PROGRESS** | Implementer |
+| **TASK-035** | Profile and optimize latency bottlenecks, document p50/p99/p99.9 latency deltas in `docs/benchmarks.md` | **DONE** | 2026-10-02 |
 
 ### Phase 15 — Load/Stress
 | Task ID | Goal | Status | Assigned |
 |---|---|---|---|
-| **TASK-036** | Build concurrent load generator and stress test harness measuring TPS and latency under sustained pressure | NOT_STARTED | — |
+| **TASK-036** | Build concurrent load generator and stress test harness measuring TPS and latency under sustained pressure | **IN_PROGRESS** | Implementer |
 | **TASK-037** | Validate backpressure, queue saturation thresholds, and graceful degradation behavior under overload | NOT_STARTED | — |
 
 ### Phase 16 — Production Readiness
@@ -152,7 +152,9 @@
 - **2026-10-02**: Completed Phase 11 (TASK-028, TASK-029).
 - **2026-10-02**: Completed Phase 12 (TASK-030, TASK-031).
 - **2026-10-02**: Completed Phase 13 (TASK-032, TASK-033).
-- **2026-10-02**: Phase 14 (Perf) activated; TASK-034 assigned.
+- **2026-10-02**: Completed Phase 14 (TASK-034, TASK-035).
+- **2026-10-02**: Phase 15 (Load/stress) activated; TASK-036 assigned.
+
 
 
 
