@@ -11,7 +11,7 @@ pub mod pipeline;
 pub use dedup::{Deduplicator, InMemoryDeduplicator};
 pub use error::TransactionError;
 pub use normalization::{normalize_transaction, RawTransaction};
-pub use pipeline::IngestionPipeline;
+pub use pipeline::{BatchIngestionResult, IngestionPipeline, TransactionFilter};
 
 #[cfg(test)]
 mod tests {
@@ -142,5 +142,44 @@ mod tests {
         // Audit log count and handler calls remain unchanged
         assert_eq!(received.load(Ordering::SeqCst), 1);
         assert_eq!(audit.count(), 1);
+    }
+
+    #[tokio::test]
+    async fn test_batch_ingestion_partial_failures() {
+        let bus = InMemoryEventBusBuilder::new().build();
+        let audit = Arc::new(InMemoryAuditLog::new());
+        let dedup = Arc::new(InMemoryDeduplicator::new());
+        let pipeline = IngestionPipeline::new(dedup, Arc::new(bus), audit);
+
+        let id1 = Uuid::new_v4();
+        let valid_raw = RawTransaction {
+            event_id: Some(id1),
+            transaction_id: Uuid::new_v4(),
+            user_id: Uuid::new_v4(),
+            event_type: "payment".to_string(),
+            channel: "web".to_string(),
+            amount_minor: 1000,
+            currency: "USD".to_string(),
+            timestamp: None,
+            metadata: None,
+        };
+
+        let invalid_raw = RawTransaction {
+            event_id: None,
+            transaction_id: Uuid::new_v4(),
+            user_id: Uuid::new_v4(),
+            event_type: "payment".to_string(),
+            channel: "web".to_string(),
+            amount_minor: -500, // Invalid negative amount
+            currency: "USD".to_string(),
+            timestamp: None,
+            metadata: None,
+        };
+
+        let batch = vec![valid_raw.clone(), invalid_raw, valid_raw];
+        let result = pipeline.ingest_batch(batch).await;
+
+        assert_eq!(result.successful.len(), 1);
+        assert_eq!(result.failed.len(), 2);
     }
 }
