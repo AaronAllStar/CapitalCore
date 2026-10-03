@@ -67,8 +67,8 @@
 ### Phase 5 — Event Engine
 | Task ID | Goal | Status | Assigned |
 |---|---|---|---|
-| **TASK-016** | Create `edge-transactions` crate with event validation, normalization, and deduplication pipeline | **IN_PROGRESS** | Implementer |
-| **TASK-017** | Implement asynchronous transaction ingestion pipeline connecting validation, bus, and audit | NOT_STARTED | Implementer |
+| **TASK-016** | Create `edge-transactions` crate with event validation, normalization, and deduplication pipeline | **DONE** | 2026-10-02 |
+| **TASK-017** | Implement asynchronous transaction ingestion pipeline connecting validation, bus, and audit | **IN_PROGRESS** | Implementer |
 
 ---
 
