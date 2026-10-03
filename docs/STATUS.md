@@ -91,8 +91,8 @@
 ### Phase 9 — API Layer
 | Task ID | Goal | Status | Assigned |
 |---|---|---|---|
-| **TASK-024** | Create `edge-api` crate with Axum HTTP routing, OpenAPI specification, and health/metrics endpoints | **IN_PROGRESS** | Implementer |
-| **TASK-025** | Implement JWT authentication middleware, transaction submission endpoint, and RBAC enforcement | NOT_STARTED | Implementer |
+| **TASK-024** | Create `edge-api` crate with Axum HTTP routing, OpenAPI specification, and health/metrics endpoints | **DONE** | 2026-10-02 |
+| **TASK-025** | Implement JWT authentication middleware, transaction submission endpoint, and RBAC enforcement | **IN_PROGRESS** | Implementer |
 
 ---
 
