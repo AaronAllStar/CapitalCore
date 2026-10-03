@@ -11,6 +11,7 @@ use std::collections::BTreeMap;
 use std::sync::Arc;
 
 use crate::arbitration::{ArbitrationStrategy, MostRestrictive};
+use edge_ml::FraudModel;
 
 /// Full decision outcome packet containing decision, reasons, features, and audit trail.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -31,6 +32,7 @@ pub struct DecisionService {
     rule_engine: Arc<RuleEngine>,
     audit_log: Arc<dyn AuditLog>,
     arbitration: Arc<dyn ArbitrationStrategy>,
+    fraud_model: Option<Arc<FraudModel>>,
 }
 
 impl DecisionService {
@@ -45,6 +47,7 @@ impl DecisionService {
             rule_engine,
             audit_log,
             arbitration: Arc::new(MostRestrictive),
+            fraud_model: None,
         }
     }
 
@@ -55,10 +58,29 @@ impl DecisionService {
         self
     }
 
+    /// Configures an embedded machine learning fraud detection model.
+    #[must_use]
+    pub fn with_ml_model(mut self, model: Arc<FraudModel>) -> Self {
+        self.fraud_model = Some(model);
+        self
+    }
+
     /// Evaluates a financial event, computing features, resolving rules, and persisting audit records.
     pub async fn evaluate(&self, event: &FinancialEvent) -> Result<DecisionOutcome, DecisionError> {
         // Step 1: Compute real-time trailing features
-        let features = self.feature_engine.compute_and_update(event);
+        let mut features = self.feature_engine.compute_and_update(event);
+        features.insert("amount_minor".to_string(), event.money().minor_units());
+
+        // Step 1.5: If an ML model is attached, score transaction and enrich features
+        let mut model_version = Some("edge-rules-v1".to_string());
+        if let Some(ref model) = self.fraud_model {
+            if let Ok(risk_bps) = model.predict_risk_bps(&features) {
+                features.insert("ml_fraud_score_bps".to_string(), risk_bps as i64);
+                let is_fraud = if risk_bps >= 5000 { 1 } else { 0 };
+                features.insert("ml_is_fraud".to_string(), is_fraud);
+                model_version = Some("edge-ml-v1".to_string());
+            }
+        }
 
         // Step 2: Assemble evaluation context and run deterministic rule engine
         let ctx = EvaluationContext::new(event.clone(), features.clone());
@@ -86,7 +108,7 @@ impl DecisionService {
             eval_result.reasons.clone(),
             feature_versions,
             rule_versions,
-            Some("edge-rules-v1".to_string()),
+            model_version,
             Utc::now(),
         );
 
