@@ -85,8 +85,8 @@
 ### Phase 8 — Decision Engine
 | Task ID | Goal | Status | Assigned |
 |---|---|---|---|
-| **TASK-022** | Create `edge-decision` crate integrating rules, features, arbitration, and audit generation | **IN_PROGRESS** | Implementer |
-| **TASK-023** | Implement decision arbitration strategies, explanation payload generation, and property-based determinism suite | NOT_STARTED | Implementer |
+| **TASK-022** | Create `edge-decision` crate integrating rules, features, arbitration, and audit generation | **DONE** | 2026-10-02 |
+| **TASK-023** | Implement decision arbitration strategies, explanation payload generation, and property-based determinism suite | **IN_PROGRESS** | Implementer |
 
 ---
 
