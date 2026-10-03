@@ -79,8 +79,8 @@
 ### Phase 7 — Features Engine
 | Task ID | Goal | Status | Assigned |
 |---|---|---|---|
-| **TASK-020** | Create `edge-features` crate with real-time sliding windows, aggregations, and feature extraction pipeline | **IN_PROGRESS** | Implementer |
-| **TASK-021** | Implement feature registry, state windowing, and determinism tests | NOT_STARTED | Implementer |
+| **TASK-020** | Create `edge-features` crate with real-time sliding windows, aggregations, and feature extraction pipeline | **DONE** | 2026-10-02 |
+| **TASK-021** | Implement feature registry, state windowing, and determinism tests | **IN_PROGRESS** | Implementer |
 
 ---
 
