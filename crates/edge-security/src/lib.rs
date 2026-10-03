@@ -7,11 +7,15 @@
 #![warn(missing_docs)]
 
 pub mod error_response;
+pub mod headers;
 pub mod rate_limiter;
+pub mod scrubber;
 pub mod validation;
 
 pub use error_response::ErrorResponse;
+pub use headers::standard_security_headers;
 pub use rate_limiter::{RateLimitResult, RateLimiter, TokenBucketLimiter};
+pub use scrubber::{scrub_json_value, scrub_string};
 pub use validation::{
     sanitize_control_chars, validate_email, validate_length, validate_not_empty, Validate,
     ValidationError,
@@ -87,5 +91,48 @@ mod tests {
         let json = serde_json::to_string(&resp).unwrap();
         assert!(json.contains("ERR_BAD_REQUEST"));
         assert!(json.contains("req-12345"));
+    }
+
+    #[test]
+    fn test_secret_scrubbing_string() {
+        let text = "Log info: user provided Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.fake and card 4111 2222 3333 4444 with \"password\": \"supersecret123\"";
+        let scrubbed = scrub_string(text);
+
+        assert!(!scrubbed.contains("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.fake"));
+        assert!(!scrubbed.contains("4111 2222 3333 4444"));
+        assert!(!scrubbed.contains("supersecret123"));
+        assert!(scrubbed.contains("[REDACTED_TOKEN]"));
+        assert!(scrubbed.contains("[REDACTED_PAN]"));
+        assert!(scrubbed.contains(r#""password": "[REDACTED]""#));
+    }
+
+    #[test]
+    fn test_secret_scrubbing_json() {
+        let mut json = serde_json::json!({
+            "user": "alice",
+            "password": "mypassword",
+            "metadata": {
+                "api_key": "secret_key_123456789",
+                "nested_token": "Bearer eyJhbGciOiJIUzI1NiJ9.abc.def"
+            }
+        });
+
+        scrub_json_value(&mut json);
+        assert_eq!(json["password"], "[REDACTED]");
+        assert_eq!(json["metadata"]["api_key"], "[REDACTED]");
+        assert_eq!(json["metadata"]["nested_token"], "[REDACTED]");
+        assert_eq!(json["user"], "alice");
+    }
+
+    #[test]
+    fn test_standard_security_headers() {
+        let headers = standard_security_headers();
+        assert_eq!(headers.len(), 7);
+        assert!(headers
+            .iter()
+            .any(|(k, v)| *k == "x-frame-options" && *v == "DENY"));
+        assert!(headers
+            .iter()
+            .any(|(k, v)| *k == "x-content-type-options" && *v == "nosniff"));
     }
 }
