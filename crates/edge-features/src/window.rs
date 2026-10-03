@@ -3,8 +3,10 @@
 use edge_domain::Channel;
 use std::collections::{BTreeMap, BTreeSet};
 
+use serde::{Deserialize, Serialize};
+
 /// Predefined time window intervals for historical metric computation.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum WindowDuration {
     /// Duration in seconds.
     Seconds(i64),
@@ -30,7 +32,7 @@ impl WindowDuration {
 }
 
 /// Compact representation of a historical transaction event in a sliding window.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct WindowEventEntry {
     /// Unix timestamp in seconds.
     pub timestamp_secs: i64,
@@ -43,7 +45,7 @@ pub struct WindowEventEntry {
 }
 
 /// Time-bounded sliding window for a specific entity.
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct EventWindow {
     entries: Vec<WindowEventEntry>,
 }

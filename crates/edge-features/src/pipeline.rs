@@ -34,6 +34,19 @@ impl FeatureEngine {
         &self.registry
     }
 
+    /// Returns a point-in-time snapshot of the historical window for a specific user.
+    #[must_use]
+    pub fn snapshot_user_window(&self, user_id: UserId) -> Option<EventWindow> {
+        let windows = self.user_windows.read().unwrap();
+        windows.get(&user_id).cloned()
+    }
+
+    /// Resets all in-memory feature window state across all users.
+    pub fn reset(&self) {
+        let mut windows = self.user_windows.write().unwrap();
+        windows.clear();
+    }
+
     /// Computes trailing historical features for an event, then updates the sliding window state.
     pub fn compute_and_update(&self, event: &FinancialEvent) -> BTreeMap<String, i64> {
         let now_secs = event.created_at().timestamp();
