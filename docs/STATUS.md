@@ -1,9 +1,9 @@
 # EdgeArena Migration Status
 
 ## Current Status Overview
-- **Active Phase**: Phase 3 — Golden datasets
-- **Completed Phases**: Phase 1 — Audit & architecture, Phase 2 — Domain model
-- **Next Task**: TASK-008 — Define golden test dataset format for financial events and decisions
+- **Active Phase**: Phase 4 — Core
+- **Completed Phases**: Phase 1 — Audit & architecture, Phase 2 — Domain model, Phase 3 — Golden datasets
+- **Next Task**: TASK-012 — Create `edge-storage` crate with SQLx connection pool, migrations, and repository traits
 - **Rule**: Only the phase marked `ACTIVE` may be worked on (per [AGENTS.md](file:///c:/Users/damed/Downloads/edge-arena/docs/AGENTS.md)).
 
 ---
@@ -14,8 +14,8 @@
 |---|---|---|---|---|---|
 | 1 | Audit & architecture | **COMPLETED** | 2026-10-02 | 2026-10-02 | Audit complete, legacy code frozen in `legacy/api/`, ADRs 0001–0004 approved. |
 | 2 | Domain model | **COMPLETED** | 2026-10-02 | 2026-10-02 | Crates initialized: `edge-core`, `edge-domain`, `edge-events`, `edge-audit`. Zero I/O deps. 28 tests passing. |
-| 3 | Golden datasets | **ACTIVE** | 2026-10-02 | — | Golden test formats, dataset runners, CI pipeline with quality gates. |
-| 4 | Core | NOT_STARTED | — | — | SQLx storage, Argon2id/Ed25519 auth, observability, rate limiting & error models. |
+| 3 | Golden datasets | **COMPLETED** | 2026-10-02 | 2026-10-02 | Golden datasets (`001_baseline`), runner (`cargo test --test golden`), CI workflow, criterion benchmarks. |
+| 4 | Core | **ACTIVE** | 2026-10-02 | — | `edge-storage` (SQLx), `edge-auth` (Ed25519/Argon2id), `edge-observability`, `edge-security`. |
 | 5 | Event engine | NOT_STARTED | — | — | Validation, normalization, in-memory event processing pipeline. |
 | 6 | Rules | NOT_STARTED | — | — | Rule engine, AST/interpreter or compiled DSL, deterministic rule evaluation. |
 | 7 | Features | NOT_STARTED | — | — | Real-time feature calculation, aggregations, sliding windows. |
@@ -49,16 +49,25 @@
 | **TASK-007** | Create `edge-audit` crate with append-only audit log trait and in-memory implementation | **DONE** | 2026-10-02 |
 
 ### Phase 3 — Golden Datasets
+| Task ID | Goal | Status | Completed |
+|---|---|---|---|
+| **TASK-008** | Define golden test dataset format for financial events and decisions | **DONE** | 2026-10-02 |
+| **TASK-009** | Build golden test runner that loads datasets and validates against expected outputs | **DONE** | 2026-10-02 |
+| **TASK-010** | Set up CI pipeline with all quality gates from AGENTS.md | **DONE** | 2026-10-02 |
+| **TASK-011** | Create `edge-bench` crate with initial criterion benchmarks | **DONE** | 2026-10-02 |
+
+### Phase 4 — Core Infrastructure
 | Task ID | Goal | Status | Assigned |
 |---|---|---|---|
-| **TASK-008** | Define golden test dataset format for financial events and decisions | **IN_PROGRESS** | Implementer |
-| **TASK-009** | Build golden test runner that loads datasets and validates against expected outputs | NOT_STARTED | Implementer |
-| **TASK-010** | Set up CI pipeline with all quality gates from AGENTS.md | NOT_STARTED | Implementer |
-| **TASK-011** | Create `edge-bench` crate with initial criterion benchmarks | NOT_STARTED | Implementer |
+| **TASK-012** | Create `edge-storage` crate with SQLx connection pool, migrations, and repository traits | **IN_PROGRESS** | Implementer |
+| **TASK-013** | Create `edge-auth` crate with JWT (Ed25519), password hashing (Argon2id), and RBAC | NOT_STARTED | Implementer |
+| **TASK-014** | Create `edge-observability` crate with tracing setup and health check infrastructure | NOT_STARTED | Implementer |
+| **TASK-015** | Create `edge-security` crate with input validation, rate limiting, and error response formatting | NOT_STARTED | Implementer |
 
 ---
 
 ## Change Log
-- **2026-10-02**: Completed TASK-001, TASK-002, TASK-003. Phase 1 → COMPLETED.
-- **2026-10-02**: Completed TASK-004, TASK-005, TASK-006, TASK-007. Phase 2 → COMPLETED.
-- **2026-10-02**: Phase 3 (Golden datasets) activated; TASK-008 assigned.
+- **2026-10-02**: Completed Phase 1 (TASK-001, TASK-002, TASK-003).
+- **2026-10-02**: Completed Phase 2 (TASK-004, TASK-005, TASK-006, TASK-007).
+- **2026-10-02**: Completed Phase 3 (TASK-008, TASK-009, TASK-010, TASK-011).
+- **2026-10-02**: Phase 4 (Core Infrastructure) activated; TASK-012 assigned.
