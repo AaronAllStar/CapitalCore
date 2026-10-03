@@ -34,3 +34,26 @@ python ml/dataset_generator.py
 Output files:
 - `ml/data/train_features.jsonl`
 - `ml/data/test_features.jsonl`
+
+## Model Training & ONNX Export
+Train the fraud classification decision tree:
+```bash
+python ml/train.py
+```
+Outputs:
+- `ml/models/model_manifest.json`: Architecture, split nodes, decision thresholds.
+- `ml/models/fraud_detector.onnx`: ONNX format model artifact.
+
+## Model Evaluation
+Evaluate on the holdout test set:
+```bash
+python ml/evaluate.py
+```
+
+### Metrics Benchmark
+- **Accuracy**: `99.60%`
+- **Precision**: `96.55%`
+- **Recall**: `100.00%`
+- **F1 Score**: `98.25%`
+- **Sample Inferences**: `ml/models/sample_inferences.json` (Used for Rust Phase 12 validation).
+
