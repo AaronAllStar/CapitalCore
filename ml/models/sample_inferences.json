@@ -1,0 +1,170 @@
+{
+  "metrics": {
+    "accuracy": 0.996,
+    "precision": 0.9655,
+    "recall": 1.0,
+    "f1": 0.9825
+  },
+  "samples": [
+    {
+      "features": {
+        "amount_minor": 18592,
+        "user_txn_count_5m": 0,
+        "user_txn_sum_5m": 0,
+        "user_txn_count_1h": 0,
+        "user_txn_sum_1h": 0,
+        "user_txn_max_1h": 0,
+        "user_txn_count_24h": 3,
+        "user_txn_sum_24h": 47516,
+        "user_distinct_merchants_24h": 3
+      },
+      "fraud_score": 0.0,
+      "prediction": 0,
+      "actual": 0
+    },
+    {
+      "features": {
+        "amount_minor": 20834,
+        "user_txn_count_5m": 0,
+        "user_txn_sum_5m": 0,
+        "user_txn_count_1h": 0,
+        "user_txn_sum_1h": 0,
+        "user_txn_max_1h": 0,
+        "user_txn_count_24h": 7,
+        "user_txn_sum_24h": 93739,
+        "user_distinct_merchants_24h": 7
+      },
+      "fraud_score": 0.0,
+      "prediction": 0,
+      "actual": 0
+    },
+    {
+      "features": {
+        "amount_minor": 23589,
+        "user_txn_count_5m": 0,
+        "user_txn_sum_5m": 0,
+        "user_txn_count_1h": 0,
+        "user_txn_sum_1h": 0,
+        "user_txn_max_1h": 0,
+        "user_txn_count_24h": 5,
+        "user_txn_sum_24h": 87673,
+        "user_distinct_merchants_24h": 5
+      },
+      "fraud_score": 0.0,
+      "prediction": 0,
+      "actual": 0
+    },
+    {
+      "features": {
+        "amount_minor": 20271,
+        "user_txn_count_5m": 0,
+        "user_txn_sum_5m": 0,
+        "user_txn_count_1h": 0,
+        "user_txn_sum_1h": 0,
+        "user_txn_max_1h": 0,
+        "user_txn_count_24h": 4,
+        "user_txn_sum_24h": 83856,
+        "user_distinct_merchants_24h": 2
+      },
+      "fraud_score": 0.0,
+      "prediction": 0,
+      "actual": 0
+    },
+    {
+      "features": {
+        "amount_minor": 10139,
+        "user_txn_count_5m": 0,
+        "user_txn_sum_5m": 0,
+        "user_txn_count_1h": 0,
+        "user_txn_sum_1h": 0,
+        "user_txn_max_1h": 0,
+        "user_txn_count_24h": 5,
+        "user_txn_sum_24h": 104127,
+        "user_distinct_merchants_24h": 3
+      },
+      "fraud_score": 0.0,
+      "prediction": 0,
+      "actual": 0
+    },
+    {
+      "features": {
+        "amount_minor": 6626,
+        "user_txn_count_5m": 0,
+        "user_txn_sum_5m": 0,
+        "user_txn_count_1h": 0,
+        "user_txn_sum_1h": 0,
+        "user_txn_max_1h": 0,
+        "user_txn_count_24h": 5,
+        "user_txn_sum_24h": 52135,
+        "user_distinct_merchants_24h": 5
+      },
+      "fraud_score": 0.0,
+      "prediction": 0,
+      "actual": 0
+    },
+    {
+      "features": {
+        "amount_minor": 1831,
+        "user_txn_count_5m": 0,
+        "user_txn_sum_5m": 0,
+        "user_txn_count_1h": 0,
+        "user_txn_sum_1h": 0,
+        "user_txn_max_1h": 0,
+        "user_txn_count_24h": 7,
+        "user_txn_sum_24h": 1686065,
+        "user_distinct_merchants_24h": 5
+      },
+      "fraud_score": 0.0,
+      "prediction": 0,
+      "actual": 0
+    },
+    {
+      "features": {
+        "amount_minor": 5773,
+        "user_txn_count_5m": 0,
+        "user_txn_sum_5m": 0,
+        "user_txn_count_1h": 0,
+        "user_txn_sum_1h": 0,
+        "user_txn_max_1h": 0,
+        "user_txn_count_24h": 5,
+        "user_txn_sum_24h": 67325,
+        "user_distinct_merchants_24h": 5
+      },
+      "fraud_score": 0.0,
+      "prediction": 0,
+      "actual": 0
+    },
+    {
+      "features": {
+        "amount_minor": 15780,
+        "user_txn_count_5m": 0,
+        "user_txn_sum_5m": 0,
+        "user_txn_count_1h": 0,
+        "user_txn_sum_1h": 0,
+        "user_txn_max_1h": 0,
+        "user_txn_count_24h": 4,
+        "user_txn_sum_24h": 73722,
+        "user_distinct_merchants_24h": 4
+      },
+      "fraud_score": 0.0,
+      "prediction": 0,
+      "actual": 0
+    },
+    {
+      "features": {
+        "amount_minor": 20058,
+        "user_txn_count_5m": 0,
+        "user_txn_sum_5m": 0,
+        "user_txn_count_1h": 0,
+        "user_txn_sum_1h": 0,
+        "user_txn_max_1h": 0,
+        "user_txn_count_24h": 7,
+        "user_txn_sum_24h": 173913,
+        "user_distinct_merchants_24h": 6
+      },
+      "fraud_score": 0.0,
+      "prediction": 0,
+      "actual": 0
+    }
+  ]
+}
