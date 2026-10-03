@@ -6,9 +6,11 @@
 #![deny(unsafe_code)]
 #![warn(missing_docs)]
 
+pub mod arbitration;
 pub mod error;
 pub mod service;
 
+pub use arbitration::{ArbitrationStrategy, MostRestrictive, PriorityFirst};
 pub use error::DecisionError;
 pub use service::{DecisionOutcome, DecisionService};
 
@@ -125,5 +127,42 @@ mod tests {
         assert_eq!(res2.decision, Decision::Review);
         assert_eq!(res2.reasons, vec!["VELOCITY_LIMIT_EXCEEDED"]);
         assert_eq!(audit.count(), 2);
+    }
+
+    #[tokio::test]
+    async fn test_arbitration_strategy_priority_first() {
+        let features = Arc::new(FeatureEngine::default());
+        let mut rule_engine = RuleEngine::new();
+
+        // Priority 1 rule yields Escalate
+        rule_engine.add_rule(Rule::new(
+            RuleId::new(),
+            "Priority 1 Escalate",
+            1,
+            Condition::AlwaysTrue,
+            RuleAction::YieldDecision(Decision::Escalate),
+            "ESCALATE_P1",
+        ));
+
+        // Priority 2 rule yields Block
+        rule_engine.add_rule(Rule::new(
+            RuleId::new(),
+            "Priority 2 Block",
+            2,
+            Condition::AlwaysTrue,
+            RuleAction::YieldDecision(Decision::Block),
+            "BLOCK_P2",
+        ));
+
+        let audit = Arc::new(InMemoryAuditLog::new());
+        // With MostRestrictive, Block would win
+        // With PriorityFirst, Escalate must win because priority 1 is evaluated first
+        let service = DecisionService::new(features, Arc::new(rule_engine), audit)
+            .with_arbitration(Arc::new(PriorityFirst));
+
+        let event = make_test_event(UserId::new(), 1000, Utc::now());
+        let outcome = service.evaluate(&event).await.expect("eval");
+
+        assert_eq!(outcome.decision, Decision::Escalate);
     }
 }
