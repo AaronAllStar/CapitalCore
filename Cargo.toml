@@ -11,6 +11,7 @@ members = [
     "crates/edge-observability",
     "crates/edge-security",
     "crates/edge-transactions",
+    "crates/edge-rules",
 ]
 
 [workspace.package]
