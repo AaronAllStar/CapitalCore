@@ -1,9 +1,9 @@
 # EdgeArena Migration Status
 
 ## Current Status Overview
-- **Active Phase**: Phase 13 — Security hardening
-- **Completed Phases**: Phase 1 — Audit & architecture, Phase 2 — Domain model, Phase 3 — Golden datasets, Phase 4 — Core infrastructure, Phase 5 — Event engine, Phase 6 — Rules engine, Phase 7 — Features engine, Phase 8 — Decision engine, Phase 9 — API, Phase 10 — Workers/events, Phase 11 — ML training, Phase 12 — Rust inference
-- **Next Task**: TASK-032 — Implement automated secret scrubbing, input fuzzing targets, and security headers middleware
+- **Active Phase**: Phase 14 — Perf
+- **Completed Phases**: Phase 1 — Audit & architecture, Phase 2 — Domain model, Phase 3 — Golden datasets, Phase 4 — Core infrastructure, Phase 5 — Event engine, Phase 6 — Rules engine, Phase 7 — Features engine, Phase 8 — Decision engine, Phase 9 — API, Phase 10 — Workers/events, Phase 11 — ML training, Phase 12 — Rust inference, Phase 13 — Security hardening
+- **Next Task**: TASK-034 — Add Criterion end-to-end performance benchmarks for full ingestion-to-decision pipeline and feature sliding windows
 - **Rule**: Only the phase marked `ACTIVE` may be worked on (per [AGENTS.md](file:///c:/Users/damed/Downloads/edge-arena/docs/AGENTS.md)).
 
 ---
@@ -24,8 +24,8 @@
 | 10 | Workers/events | **COMPLETED** | 2026-10-02 | 2026-10-02 | Async workers, exponential backoff retries, DLQ isolation, task pool supervisor, graceful shutdown (`edge-workers`). 10 tests passing. |
 | 11 | ML training | **COMPLETED** | 2026-10-02 | 2026-10-02 | Python training pipeline, feature schema alignment with `edge-features`, 99.6% accuracy fraud model, ONNX export. |
 | 12 | Rust inference | **COMPLETED** | 2026-10-02 | 2026-10-02 | `edge-ml` embedded inference engine, 100% parity with Python golden inferences, integrated into `edge-decision`. 5 tests passing. |
-| 13 | Security hardening | **ACTIVE** | 2026-10-02 | — | Penetration test remediation, fuzzing, secret scrubbing, sandbox isolation. |
-| 14 | Perf | NOT_STARTED | — | — | Criterion benchmark deltas, profiling, latency optimization (p99/p99.9). |
+| 13 | Security hardening | **COMPLETED** | 2026-10-02 | 2026-10-02 | Automated secret scrubber, security headers middleware, fuzzing targets, constant-time compare (`edge-security`). 15 tests passing. |
+| 14 | Perf | **ACTIVE** | 2026-10-02 | — | Criterion benchmark deltas, profiling, latency optimization (p99/p99.9). |
 | 15 | Load/stress | NOT_STARTED | — | — | End-to-end stress testing, concurrency thresholds, degradation behavior. |
 | 16 | Production readiness | NOT_STARTED | — | — | Deployment configs, operational runbooks, final verification. |
 
@@ -113,10 +113,28 @@
 | **TASK-031** | Integrate `edge-ml` into `edge-decision` pipeline and validate parity with Python golden inferences | **DONE** | 2026-10-02 |
 
 ### Phase 13 — Security Hardening
+| Task ID | Goal | Status | Completed |
+|---|---|---|---|
+| **TASK-032** | Implement automated secret scrubbing, input fuzzing targets, and security headers middleware | **DONE** | 2026-10-02 |
+| **TASK-033** | Audit cargo deny security licenses/advisories, dependency vetting, and constant-time secret comparison verification | **DONE** | 2026-10-02 |
+
+### Phase 14 — Perf
+| Task ID | Goal | Status | Assigned / Completed |
+|---|---|---|---|
+| **TASK-034** | Implement Criterion end-to-end performance benchmarks for full ingestion-to-decision pipeline, sliding windows, and ML inference | **DONE** | 2026-10-02 |
+| **TASK-035** | Profile and optimize latency bottlenecks, document p50/p99/p99.9 latency deltas in `docs/benchmarks.md` | **IN_PROGRESS** | Implementer |
+
+### Phase 15 — Load/Stress
 | Task ID | Goal | Status | Assigned |
 |---|---|---|---|
-| **TASK-032** | Implement automated secret scrubbing, input fuzzing targets, and security headers middleware | **IN_PROGRESS** | Implementer |
-| **TASK-033** | Audit cargo deny security licenses/advisories, dependency vetting, and constant-time secret comparison verification | NOT_STARTED | — |
+| **TASK-036** | Build concurrent load generator and stress test harness measuring TPS and latency under sustained pressure | NOT_STARTED | — |
+| **TASK-037** | Validate backpressure, queue saturation thresholds, and graceful degradation behavior under overload | NOT_STARTED | — |
+
+### Phase 16 — Production Readiness
+| Task ID | Goal | Status | Assigned |
+|---|---|---|---|
+| **TASK-038** | Create production multi-stage Dockerfile, docker-compose production environment, and operational runbooks | NOT_STARTED | — |
+| **TASK-039** | Perform final end-to-end system verification, health/metrics audit, and migration sign-off | NOT_STARTED | — |
 
 ---
 
@@ -133,7 +151,9 @@
 - **2026-10-02**: Completed Phase 10 (TASK-026, TASK-027).
 - **2026-10-02**: Completed Phase 11 (TASK-028, TASK-029).
 - **2026-10-02**: Completed Phase 12 (TASK-030, TASK-031).
-- **2026-10-02**: Phase 13 (Security Hardening) activated; TASK-032 assigned.
+- **2026-10-02**: Completed Phase 13 (TASK-032, TASK-033).
+- **2026-10-02**: Phase 14 (Perf) activated; TASK-034 assigned.
+
 
 
 
