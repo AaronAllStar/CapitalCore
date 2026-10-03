@@ -1,9 +1,9 @@
 # EdgeArena Migration Status
 
 ## Current Status Overview
-- **Active Phase**: Phase 8 — Decision
-- **Completed Phases**: Phase 1 — Audit & architecture, Phase 2 — Domain model, Phase 3 — Golden datasets, Phase 4 — Core infrastructure, Phase 5 — Event engine, Phase 6 — Rules engine, Phase 7 — Features engine
-- **Next Task**: TASK-022 — Create `edge-decision` crate integrating rules, features, arbitration, and audit generation
+- **Active Phase**: Phase 9 — API
+- **Completed Phases**: Phase 1 — Audit & architecture, Phase 2 — Domain model, Phase 3 — Golden datasets, Phase 4 — Core infrastructure, Phase 5 — Event engine, Phase 6 — Rules engine, Phase 7 — Features engine, Phase 8 — Decision engine
+- **Next Task**: TASK-024 — Create `edge-api` crate with Axum HTTP routing, OpenAPI specification, and health/metrics endpoints
 - **Rule**: Only the phase marked `ACTIVE` may be worked on (per [AGENTS.md](file:///c:/Users/damed/Downloads/edge-arena/docs/AGENTS.md)).
 
 ---
@@ -19,8 +19,8 @@
 | 5 | Event engine | **COMPLETED** | 2026-10-02 | 2026-10-02 | `edge-transactions` validation, normalization, deduplication, batching, and pipeline. 55 tests passing. |
 | 6 | Rules | **COMPLETED** | 2026-10-02 | 2026-10-02 | `edge-rules` AST, evaluation context, condition matching, repository, and audit explanations. 62 tests passing. |
 | 7 | Features | **COMPLETED** | 2026-10-02 | 2026-10-02 | `edge-features` real-time sliding windows, integer aggregations, entity isolation. 70 tests passing. |
-| 8 | Decision | **ACTIVE** | 2026-10-02 | — | Decision engine (ALLOW, REVIEW, BLOCK, ESCALATE), immutable audit generation (`edge-decision`). |
-| 9 | API | NOT_STARTED | — | — | Thin Axum API layer, JWT middleware, transaction submission, OpenAPI spec. |
+| 8 | Decision | **COMPLETED** | 2026-10-02 | 2026-10-02 | `edge-decision` orchestrating features, rules, arbitration strategies, and tamper-evident audit. 75 tests passing. |
+| 9 | API | **ACTIVE** | 2026-10-02 | — | Thin Axum API layer, JWT middleware, transaction submission, OpenAPI spec (`edge-api`). |
 | 10 | Workers/events | NOT_STARTED | — | — | Async workers, queue evaluation (Tokio tasks / NATS JetStream). |
 | 11 | ML training | NOT_STARTED | — | — | Python training pipeline, feature schema alignment, ONNX export. |
 | 12 | Rust inference | NOT_STARTED | — | — | `edge-ml` ONNX Runtime integration in Rust execution path. |
@@ -83,10 +83,16 @@
 | **TASK-021** | Implement feature registry, state windowing, and determinism tests | **DONE** | 2026-10-02 |
 
 ### Phase 8 — Decision Engine
-| Task ID | Goal | Status | Assigned |
+| Task ID | Goal | Status | Completed |
 |---|---|---|---|
 | **TASK-022** | Create `edge-decision` crate integrating rules, features, arbitration, and audit generation | **DONE** | 2026-10-02 |
-| **TASK-023** | Implement decision arbitration strategies, explanation payload generation, and property-based determinism suite | **IN_PROGRESS** | Implementer |
+| **TASK-023** | Implement decision arbitration strategies, explanation payload generation, and property-based determinism suite | **DONE** | 2026-10-02 |
+
+### Phase 9 — API Layer
+| Task ID | Goal | Status | Assigned |
+|---|---|---|---|
+| **TASK-024** | Create `edge-api` crate with Axum HTTP routing, OpenAPI specification, and health/metrics endpoints | **IN_PROGRESS** | Implementer |
+| **TASK-025** | Implement JWT authentication middleware, transaction submission endpoint, and RBAC enforcement | NOT_STARTED | Implementer |
 
 ---
 
@@ -98,4 +104,5 @@
 - **2026-10-02**: Completed Phase 5 (TASK-016, TASK-017).
 - **2026-10-02**: Completed Phase 6 (TASK-018, TASK-019).
 - **2026-10-02**: Completed Phase 7 (TASK-020, TASK-021).
-- **2026-10-02**: Phase 8 (Decision Engine) activated; TASK-022 assigned.
+- **2026-10-02**: Completed Phase 8 (TASK-022, TASK-023).
+- **2026-10-02**: Phase 9 (API Layer) activated; TASK-024 assigned.
