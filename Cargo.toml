@@ -6,6 +6,7 @@ members = [
     "crates/edge-events",
     "crates/edge-audit",
     "crates/edge-bench",
+    "crates/edge-storage",
 ]
 
 [workspace.package]
@@ -23,5 +24,6 @@ uuid = { version = "1.10", default-features = false, features = ["serde", "v4"] 
 chrono = { version = "0.4", default-features = false, features = ["serde", "clock", "alloc"] }
 tokio = { version = "1.40", default-features = false, features = ["rt-multi-thread", "macros", "time"] }
 criterion = { version = "0.5", default-features = false, features = ["cargo_bench_support"] }
+sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio", "postgres", "uuid", "chrono", "migrate", "macros"] }
 proptest = "1.4"
 
