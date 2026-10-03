@@ -725,6 +725,7 @@ dependencies = [
  "edge-domain",
  "edge-events",
  "edge-observability",
+ "edge-security",
  "proptest",
  "serde",
  "serde_json",

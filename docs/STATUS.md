@@ -1,9 +1,9 @@
 # EdgeArena Migration Status
 
 ## Current Status Overview
-- **Active Phase**: Phase 15 — Load/stress
-- **Completed Phases**: Phase 1 — Audit & architecture, Phase 2 — Domain model, Phase 3 — Golden datasets, Phase 4 — Core infrastructure, Phase 5 — Event engine, Phase 6 — Rules engine, Phase 7 — Features engine, Phase 8 — Decision engine, Phase 9 — API, Phase 10 — Workers/events, Phase 11 — ML training, Phase 12 — Rust inference, Phase 13 — Security hardening, Phase 14 — Perf
-- **Next Task**: TASK-036 — Build concurrent load generator and stress test harness measuring TPS and latency under sustained pressure
+- **Active Phase**: Phase 16 — Production readiness
+- **Completed Phases**: Phase 1 — Audit & architecture, Phase 2 — Domain model, Phase 3 — Golden datasets, Phase 4 — Core infrastructure, Phase 5 — Event engine, Phase 6 — Rules engine, Phase 7 — Features engine, Phase 8 — Decision engine, Phase 9 — API, Phase 10 — Workers/events, Phase 11 — ML training, Phase 12 — Rust inference, Phase 13 — Security hardening, Phase 14 — Perf, Phase 15 — Load/stress
+- **Next Task**: TASK-038 — Create production multi-stage Dockerfile, docker-compose production environment, and operational runbooks
 - **Rule**: Only the phase marked `ACTIVE` may be worked on (per [AGENTS.md](file:///c:/Users/damed/Downloads/edge-arena/docs/AGENTS.md)).
 
 ---
@@ -26,8 +26,8 @@
 | 12 | Rust inference | **COMPLETED** | 2026-10-02 | 2026-10-02 | `edge-ml` embedded inference engine, 100% parity with Python golden inferences, integrated into `edge-decision`. 5 tests passing. |
 | 13 | Security hardening | **COMPLETED** | 2026-10-02 | 2026-10-02 | Automated secret scrubber, security headers middleware, fuzzing targets, constant-time compare (`edge-security`). 15 tests passing. |
 | 14 | Perf | **COMPLETED** | 2026-10-02 | 2026-10-02 | Criterion end-to-end benchmarks, micro-optimizations, p50/p99 latency distribution documented (`edge-bench`). |
-| 15 | Load/stress | **ACTIVE** | 2026-10-02 | — | End-to-end stress testing, concurrency thresholds, degradation behavior. |
-| 16 | Production readiness | NOT_STARTED | — | — | Deployment configs, operational runbooks, final verification. |
+| 15 | Load/stress | **COMPLETED** | 2026-10-02 | 2026-10-02 | Concurrent load harness (500 txns burst), backpressure verification, DLQ isolation, burst rate limiting degradation. |
+| 16 | Production readiness | **ACTIVE** | 2026-10-02 | — | Deployment configs, operational runbooks, final verification. |
 
 ---
 
@@ -125,15 +125,15 @@
 | **TASK-035** | Profile and optimize latency bottlenecks, document p50/p99/p99.9 latency deltas in `docs/benchmarks.md` | **DONE** | 2026-10-02 |
 
 ### Phase 15 — Load/Stress
-| Task ID | Goal | Status | Assigned / Completed |
+| Task ID | Goal | Status | Completed |
 |---|---|---|---|
 | **TASK-036** | Build concurrent load generator and stress test harness measuring TPS and latency under sustained pressure | **DONE** | 2026-10-02 |
-| **TASK-037** | Validate backpressure, queue saturation thresholds, and graceful degradation behavior under overload | **IN_PROGRESS** | Implementer |
+| **TASK-037** | Validate backpressure, queue saturation thresholds, and graceful degradation behavior under overload | **DONE** | 2026-10-02 |
 
 ### Phase 16 — Production Readiness
 | Task ID | Goal | Status | Assigned |
 |---|---|---|---|
-| **TASK-038** | Create production multi-stage Dockerfile, docker-compose production environment, and operational runbooks | NOT_STARTED | — |
+| **TASK-038** | Create production multi-stage Dockerfile, docker-compose production environment, and operational runbooks | **IN_PROGRESS** | Implementer |
 | **TASK-039** | Perform final end-to-end system verification, health/metrics audit, and migration sign-off | NOT_STARTED | — |
 
 ---
@@ -153,7 +153,9 @@
 - **2026-10-02**: Completed Phase 12 (TASK-030, TASK-031).
 - **2026-10-02**: Completed Phase 13 (TASK-032, TASK-033).
 - **2026-10-02**: Completed Phase 14 (TASK-034, TASK-035).
-- **2026-10-02**: Phase 15 (Load/stress) activated; TASK-036 assigned.
+- **2026-10-02**: Completed Phase 15 (TASK-036, TASK-037).
+- **2026-10-02**: Phase 16 (Production readiness) activated; TASK-038 assigned.
+
 
 
 
