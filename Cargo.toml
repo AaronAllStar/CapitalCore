@@ -7,6 +7,7 @@ members = [
     "crates/edge-audit",
     "crates/edge-bench",
     "crates/edge-storage",
+    "crates/edge-auth",
 ]
 
 [workspace.package]
@@ -25,5 +26,9 @@ chrono = { version = "0.4", default-features = false, features = ["serde", "cloc
 tokio = { version = "1.40", default-features = false, features = ["rt-multi-thread", "macros", "time"] }
 criterion = { version = "0.5", default-features = false, features = ["cargo_bench_support"] }
 sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio", "postgres", "uuid", "chrono", "migrate", "macros"] }
+argon2 = { version = "0.5", default-features = false, features = ["alloc", "password-hash"] }
+ed25519-dalek = { version = "2.1", default-features = false, features = ["std", "rand_core"] }
+rand_core = { version = "0.6", default-features = false, features = ["getrandom"] }
+base64 = "0.22"
 proptest = "1.4"
 
