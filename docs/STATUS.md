@@ -73,8 +73,8 @@
 ### Phase 6 — Rules Engine
 | Task ID | Goal | Status | Assigned |
 |---|---|---|---|
-| **TASK-018** | Create `edge-rules` crate with rule AST, evaluation context, condition matching, and rule set execution | **IN_PROGRESS** | Implementer |
-| **TASK-019** | Implement rule repository, deterministic priority ordering, and audit explanation generators | NOT_STARTED | Implementer |
+| **TASK-018** | Create `edge-rules` crate with rule AST, evaluation context, condition matching, and rule set execution | **DONE** | 2026-10-02 |
+| **TASK-019** | Implement rule repository, deterministic priority ordering, and audit explanation generators | **IN_PROGRESS** | Implementer |
 
 ---
 
