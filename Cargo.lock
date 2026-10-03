@@ -571,6 +571,7 @@ dependencies = [
  "edge-core",
  "edge-domain",
  "edge-features",
+ "edge-ml",
  "edge-rules",
  "proptest",
  "serde",

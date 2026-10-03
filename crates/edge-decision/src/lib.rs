@@ -165,4 +165,41 @@ mod tests {
 
         assert_eq!(outcome.decision, Decision::Escalate);
     }
+
+    #[tokio::test]
+    async fn test_decision_service_with_ml_model_scoring_and_rule_trigger() {
+        use edge_ml::FraudModel;
+        const MANIFEST_JSON: &str = include_str!("../../../ml/models/model_manifest.json");
+
+        let ml_model = Arc::new(FraudModel::load_from_json(MANIFEST_JSON).unwrap());
+        let features = Arc::new(FeatureEngine::default());
+        let mut rule_engine = RuleEngine::new();
+
+        // Add a rule that triggers Block if ML fraud score >= 5000 bps (50%)
+        rule_engine.add_rule(Rule::new(
+            RuleId::new(),
+            "ML Fraud Flag",
+            1,
+            Condition::FeatureThreshold {
+                feature: "ml_fraud_score_bps".to_string(),
+                op: Operator::Gte,
+                value: 5000,
+            },
+            RuleAction::YieldDecision(Decision::Block),
+            "HIGH_ML_FRAUD_RISK",
+        ));
+
+        let audit = Arc::new(InMemoryAuditLog::new());
+        let service =
+            DecisionService::new(features, Arc::new(rule_engine), audit).with_ml_model(ml_model);
+
+        // Huge transaction $20,000 to trigger ML model
+        let event = make_test_event(UserId::new(), 2_000_000, Utc::now());
+        let outcome = service.evaluate(&event).await.expect("eval");
+
+        assert!(outcome.features_snapshot.contains_key("ml_fraud_score_bps"));
+        assert_eq!(outcome.audit_event.model_version(), Some("edge-ml-v1"));
+        assert_eq!(outcome.decision, Decision::Block);
+        assert_eq!(outcome.reasons, vec!["HIGH_ML_FRAUD_RISK"]);
+    }
 }

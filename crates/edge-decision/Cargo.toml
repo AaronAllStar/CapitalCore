@@ -11,6 +11,7 @@ edge-domain = { path = "../edge-domain" }
 edge-rules = { path = "../edge-rules" }
 edge-features = { path = "../edge-features" }
 edge-audit = { path = "../edge-audit" }
+edge-ml = { path = "../edge-ml" }
 serde = { workspace = true }
 serde_json = { workspace = true }
 thiserror = { workspace = true }
