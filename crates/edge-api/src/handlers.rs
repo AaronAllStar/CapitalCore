@@ -2,7 +2,10 @@
 
 use crate::openapi::generate_openapi_spec;
 use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
+use edge_auth::{JwtKeyPair, RbacAuthorizer};
+use edge_decision::DecisionService;
 use edge_observability::{HealthRegistry, HealthStatus, MetricsRegistry};
+use edge_transactions::IngestionPipeline;
 use serde_json::json;
 use std::sync::Arc;
 
@@ -13,6 +16,14 @@ pub struct AppState {
     pub health_registry: Arc<HealthRegistry>,
     /// Thread-safe metrics registry.
     pub metrics_registry: Arc<MetricsRegistry>,
+    /// Cryptographic JWT key pair for verifying authentication tokens.
+    pub keypair: Arc<JwtKeyPair>,
+    /// Role-based access control authorizer.
+    pub authorizer: Arc<RbacAuthorizer>,
+    /// Transaction ingestion pipeline.
+    pub ingestion_pipeline: Arc<IngestionPipeline>,
+    /// Central decision engine service.
+    pub decision_service: Arc<DecisionService>,
 }
 
 /// Liveness probe handler returning HTTP 200 OK.

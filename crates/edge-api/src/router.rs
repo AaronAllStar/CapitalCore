@@ -3,7 +3,8 @@
 use crate::handlers::{
     liveness_handler, metrics_handler, openapi_handler, readiness_handler, AppState,
 };
-use axum::routing::get;
+use crate::transaction::submit_transaction_handler;
+use axum::routing::{get, post};
 use axum::Router;
 use tower_http::trace::TraceLayer;
 
@@ -14,6 +15,7 @@ pub fn build_router(state: AppState) -> Router {
         .route("/health/readiness", get(readiness_handler))
         .route("/metrics", get(metrics_handler))
         .route("/openapi.json", get(openapi_handler))
+        .route("/api/v1/transactions", post(submit_transaction_handler))
         .layer(TraceLayer::new_for_http())
         .with_state(state)
 }
