@@ -474,6 +474,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "edge-decision"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "edge-audit",
+ "edge-core",
+ "edge-domain",
+ "edge-features",
+ "edge-rules",
+ "proptest",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.69",
+ "tokio",
+ "uuid",
+]
+
+[[package]]
 name = "edge-domain"
 version = "0.1.0"
 dependencies = [
