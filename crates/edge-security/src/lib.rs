@@ -21,6 +21,19 @@ pub use validation::{
     ValidationError,
 };
 
+/// Compares two byte slices in constant time to prevent timing side-channel attacks.
+#[must_use]
+pub fn constant_time_compare(a: &[u8], b: &[u8]) -> bool {
+    if a.len() != b.len() {
+        return false;
+    }
+    let mut diff = 0u8;
+    for (x, y) in a.iter().zip(b.iter()) {
+        diff |= x ^ y;
+    }
+    diff == 0
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -134,5 +147,13 @@ mod tests {
         assert!(headers
             .iter()
             .any(|(k, v)| *k == "x-content-type-options" && *v == "nosniff"));
+    }
+
+    #[test]
+    fn test_constant_time_compare() {
+        assert!(constant_time_compare(b"password123", b"password123"));
+        assert!(!constant_time_compare(b"password123", b"password124"));
+        assert!(!constant_time_compare(b"short", b"longer_string"));
+        assert!(constant_time_compare(b"", b""));
     }
 }
