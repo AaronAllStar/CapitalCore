@@ -498,6 +498,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "edge-features"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "edge-core",
+ "edge-domain",
+ "proptest",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.69",
+ "tokio",
+ "uuid",
+]
+
+[[package]]
 name = "edge-observability"
 version = "0.1.0"
 dependencies = [

@@ -12,6 +12,7 @@ members = [
     "crates/edge-security",
     "crates/edge-transactions",
     "crates/edge-rules",
+    "crates/edge-features",
 ]
 
 [workspace.package]
