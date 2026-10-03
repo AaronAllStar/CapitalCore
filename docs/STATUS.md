@@ -1,9 +1,9 @@
 # EdgeArena Migration Status
 
 ## Current Status Overview
-- **Active Phase**: Phase 4 — Core
-- **Completed Phases**: Phase 1 — Audit & architecture, Phase 2 — Domain model, Phase 3 — Golden datasets
-- **Next Task**: TASK-012 — Create `edge-storage` crate with SQLx connection pool, migrations, and repository traits
+- **Active Phase**: Phase 5 — Event engine
+- **Completed Phases**: Phase 1 — Audit & architecture, Phase 2 — Domain model, Phase 3 — Golden datasets, Phase 4 — Core infrastructure
+- **Next Task**: TASK-016 — Create `edge-transactions` crate with event validation, normalization, and deduplication pipeline
 - **Rule**: Only the phase marked `ACTIVE` may be worked on (per [AGENTS.md](file:///c:/Users/damed/Downloads/edge-arena/docs/AGENTS.md)).
 
 ---
@@ -15,8 +15,8 @@
 | 1 | Audit & architecture | **COMPLETED** | 2026-10-02 | 2026-10-02 | Audit complete, legacy code frozen in `legacy/api/`, ADRs 0001–0004 approved. |
 | 2 | Domain model | **COMPLETED** | 2026-10-02 | 2026-10-02 | Crates initialized: `edge-core`, `edge-domain`, `edge-events`, `edge-audit`. Zero I/O deps. 28 tests passing. |
 | 3 | Golden datasets | **COMPLETED** | 2026-10-02 | 2026-10-02 | Golden datasets (`001_baseline`), runner (`cargo test --test golden`), CI workflow, criterion benchmarks. |
-| 4 | Core | **ACTIVE** | 2026-10-02 | — | `edge-storage` (SQLx), `edge-auth` (Ed25519/Argon2id), `edge-observability`, `edge-security`. |
-| 5 | Event engine | NOT_STARTED | — | — | Validation, normalization, in-memory event processing pipeline. |
+| 4 | Core | **COMPLETED** | 2026-10-02 | 2026-10-02 | `edge-storage` (SQLx), `edge-auth` (Ed25519/Argon2id), `edge-observability`, `edge-security`. 48 tests passing. |
+| 5 | Event engine | **ACTIVE** | 2026-10-02 | — | Validation, normalization, in-memory event processing pipeline (`edge-transactions`). |
 | 6 | Rules | NOT_STARTED | — | — | Rule engine, AST/interpreter or compiled DSL, deterministic rule evaluation. |
 | 7 | Features | NOT_STARTED | — | — | Real-time feature calculation, aggregations, sliding windows. |
 | 8 | Decision | NOT_STARTED | — | — | Decision engine (ALLOW, REVIEW, BLOCK, ESCALATE), immutable audit generation. |
@@ -57,12 +57,18 @@
 | **TASK-011** | Create `edge-bench` crate with initial criterion benchmarks | **DONE** | 2026-10-02 |
 
 ### Phase 4 — Core Infrastructure
-| Task ID | Goal | Status | Assigned |
+| Task ID | Goal | Status | Completed |
 |---|---|---|---|
 | **TASK-012** | Create `edge-storage` crate with SQLx connection pool, migrations, and repository traits | **DONE** | 2026-10-02 |
 | **TASK-013** | Create `edge-auth` crate with JWT (Ed25519), password hashing (Argon2id), and RBAC | **DONE** | 2026-10-02 |
 | **TASK-014** | Create `edge-observability` crate with tracing setup and health check infrastructure | **DONE** | 2026-10-02 |
-| **TASK-015** | Create `edge-security` crate with input validation, rate limiting, and error response formatting | **IN_PROGRESS** | Implementer |
+| **TASK-015** | Create `edge-security` crate with input validation, rate limiting, and error response formatting | **DONE** | 2026-10-02 |
+
+### Phase 5 — Event Engine
+| Task ID | Goal | Status | Assigned |
+|---|---|---|---|
+| **TASK-016** | Create `edge-transactions` crate with event validation, normalization, and deduplication pipeline | **IN_PROGRESS** | Implementer |
+| **TASK-017** | Implement asynchronous transaction ingestion pipeline connecting validation, bus, and audit | NOT_STARTED | Implementer |
 
 ---
 
@@ -70,4 +76,5 @@
 - **2026-10-02**: Completed Phase 1 (TASK-001, TASK-002, TASK-003).
 - **2026-10-02**: Completed Phase 2 (TASK-004, TASK-005, TASK-006, TASK-007).
 - **2026-10-02**: Completed Phase 3 (TASK-008, TASK-009, TASK-010, TASK-011).
-- **2026-10-02**: Phase 4 (Core Infrastructure) activated; TASK-012 assigned.
+- **2026-10-02**: Completed Phase 4 (TASK-012, TASK-013, TASK-014, TASK-015).
+- **2026-10-02**: Phase 5 (Event Engine) activated; TASK-016 assigned.
