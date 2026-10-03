@@ -8,6 +8,7 @@ members = [
     "crates/edge-bench",
     "crates/edge-storage",
     "crates/edge-auth",
+    "crates/edge-observability",
 ]
 
 [workspace.package]
@@ -30,5 +31,7 @@ argon2 = { version = "0.5", default-features = false, features = ["alloc", "pass
 ed25519-dalek = { version = "2.1", default-features = false, features = ["std", "rand_core"] }
 rand_core = { version = "0.6", default-features = false, features = ["getrandom"] }
 base64 = "0.22"
+tracing = { version = "0.1", default-features = false, features = ["std"] }
+tracing-subscriber = { version = "0.3", default-features = false, features = ["fmt", "env-filter", "json", "ansi"] }
 proptest = "1.4"
 
