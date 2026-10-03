@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "EdgeArenaMLFeatureSchema",
+  "description": "Defines feature attributes strictly aligned with Rust edge-features engine.",
+  "type": "object",
+  "required": [
+    "amount_minor",
+    "user_txn_count_5m",
+    "user_txn_sum_5m",
+    "user_txn_count_1h",
+    "user_txn_sum_1h",
+    "user_txn_max_1h",
+    "user_txn_count_24h",
+    "user_txn_sum_24h",
+    "user_distinct_merchants_24h"
+  ],
+  "properties": {
+    "amount_minor": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Current transaction amount in minor units (cents)"
+    },
+    "user_txn_count_5m": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Trailing 5-minute transaction count for user"
+    },
+    "user_txn_sum_5m": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Trailing 5-minute total amount in minor units for user"
+    },
+    "user_txn_count_1h": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Trailing 1-hour transaction count for user"
+    },
+    "user_txn_sum_1h": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Trailing 1-hour total amount in minor units for user"
+    },
+    "user_txn_max_1h": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Trailing 1-hour maximum transaction amount in minor units for user"
+    },
+    "user_txn_count_24h": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Trailing 24-hour transaction count for user"
+    },
+    "user_txn_sum_24h": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Trailing 24-hour total amount in minor units for user"
+    },
+    "user_distinct_merchants_24h": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Trailing 24-hour distinct merchant count for user"
+    },
+    "is_fraud": {
+      "type": "integer",
+      "enum": [0, 1],
+      "description": "Binary fraud label (0 = legitimate, 1 = fraudulent)"
+    }
+  }
+}
