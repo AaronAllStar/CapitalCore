@@ -131,10 +131,10 @@
 | **TASK-037** | Validate backpressure, queue saturation thresholds, and graceful degradation behavior under overload | **DONE** | 2026-10-02 |
 
 ### Phase 16 — Production Readiness
-| Task ID | Goal | Status | Assigned |
+| Task ID | Goal | Status | Assigned / Completed |
 |---|---|---|---|
-| **TASK-038** | Create production multi-stage Dockerfile, docker-compose production environment, and operational runbooks | **IN_PROGRESS** | Implementer |
-| **TASK-039** | Perform final end-to-end system verification, health/metrics audit, and migration sign-off | NOT_STARTED | — |
+| **TASK-038** | Create production multi-stage Dockerfile, docker-compose production environment, and operational runbooks | **DONE** | 2026-10-02 |
+| **TASK-039** | Perform final end-to-end system verification, health/metrics audit, and migration sign-off | **IN_PROGRESS** | Implementer |
 
 ---
 

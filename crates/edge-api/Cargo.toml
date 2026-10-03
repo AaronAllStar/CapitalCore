@@ -13,6 +13,11 @@ edge-security = { path = "../edge-security" }
 edge-auth = { path = "../edge-auth" }
 edge-transactions = { path = "../edge-transactions" }
 edge-decision = { path = "../edge-decision" }
+edge-audit = { path = "../edge-audit" }
+edge-events = { path = "../edge-events" }
+edge-features = { path = "../edge-features" }
+edge-rules = { path = "../edge-rules" }
+edge-ml = { path = "../edge-ml" }
 axum = { workspace = true }
 tower = { workspace = true }
 tower-http = { workspace = true }
@@ -22,13 +27,11 @@ tokio = { workspace = true }
 thiserror = { workspace = true }
 chrono = { workspace = true }
 uuid = { workspace = true }
+tracing = { workspace = true }
 
 [dev-dependencies]
-edge-audit = { path = "../edge-audit" }
-edge-events = { path = "../edge-events" }
-edge-features = { path = "../edge-features" }
-edge-rules = { path = "../edge-rules" }
-edge-ml = { path = "../edge-ml" }
 proptest = { workspace = true }
 
-
+[[bin]]
+name = "edge-api"
+path = "src/main.rs"

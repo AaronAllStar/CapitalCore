@@ -1,0 +1,63 @@
+# Production Docker Compose specification for EdgeArena
+version: "3.8"
+
+services:
+  edge-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: edgearena/edge-api:latest
+    container_name: edge-api-prod
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      APP_ENV: production
+      PORT: 8080
+      HOST: 0.0.0.0
+      RUST_LOG: info,edge_api=debug,edge_decision=info
+      DATABASE_URL: postgres://edgearena:edgearena_secure_prod_pass@postgres:5432/edgearena_prod
+    depends_on:
+      postgres:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: "4.0"
+          memory: 4096M
+        reservations:
+          cpus: "1.0"
+          memory: 1024M
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/edge-api", "--version"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: edge-postgres-prod
+    restart: always
+    environment:
+      POSTGRES_USER: edgearena
+      POSTGRES_PASSWORD: edgearena_secure_prod_pass
+      POSTGRES_DB: edgearena_prod
+    ports:
+      - "5432:5432"
+    volumes:
+      - edge_pgdata_prod:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U edgearena -d edgearena_prod"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 2048M
+
+volumes:
+  edge_pgdata_prod:
+    driver: local
