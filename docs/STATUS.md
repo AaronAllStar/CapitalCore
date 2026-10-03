@@ -1,9 +1,9 @@
 # EdgeArena Migration Status
 
 ## Current Status Overview
-- **Active Phase**: Phase 11 — ML training
-- **Completed Phases**: Phase 1 — Audit & architecture, Phase 2 — Domain model, Phase 3 — Golden datasets, Phase 4 — Core infrastructure, Phase 5 — Event engine, Phase 6 — Rules engine, Phase 7 — Features engine, Phase 8 — Decision engine, Phase 9 — API, Phase 10 — Workers/events
-- **Next Task**: TASK-028 — Define ML feature schema, training dataset generator, and pipeline matching Rust `edge-features`
+- **Active Phase**: Phase 12 — Rust inference
+- **Completed Phases**: Phase 1 — Audit & architecture, Phase 2 — Domain model, Phase 3 — Golden datasets, Phase 4 — Core infrastructure, Phase 5 — Event engine, Phase 6 — Rules engine, Phase 7 — Features engine, Phase 8 — Decision engine, Phase 9 — API, Phase 10 — Workers/events, Phase 11 — ML training
+- **Next Task**: TASK-030 — Create `crates/edge-ml` crate with model manifest / ONNX parser, decision tree inference engine, and risk score emitter
 - **Rule**: Only the phase marked `ACTIVE` may be worked on (per [AGENTS.md](file:///c:/Users/damed/Downloads/edge-arena/docs/AGENTS.md)).
 
 ---
@@ -22,8 +22,8 @@
 | 8 | Decision | **COMPLETED** | 2026-10-02 | 2026-10-02 | `edge-decision` orchestrating features, rules, arbitration strategies, and tamper-evident audit. 75 tests passing. |
 | 9 | API | **COMPLETED** | 2026-10-02 | 2026-10-02 | Thin Axum API layer, JWT middleware, transaction submission, OpenAPI spec (`edge-api`). 9 tests passing. |
 | 10 | Workers/events | **COMPLETED** | 2026-10-02 | 2026-10-02 | Async workers, exponential backoff retries, DLQ isolation, task pool supervisor, graceful shutdown (`edge-workers`). 10 tests passing. |
-| 11 | ML training | **ACTIVE** | 2026-10-02 | — | Python training pipeline, feature schema alignment with `edge-features`, ONNX model export. |
-| 12 | Rust inference | NOT_STARTED | — | — | `edge-ml` ONNX Runtime integration in Rust execution path. |
+| 11 | ML training | **COMPLETED** | 2026-10-02 | 2026-10-02 | Python training pipeline, feature schema alignment with `edge-features`, 99.6% accuracy fraud model, ONNX export. |
+| 12 | Rust inference | **ACTIVE** | 2026-10-02 | — | `edge-ml` embedded inference engine, model evaluation in Rust execution path. |
 | 13 | Security hardening | NOT_STARTED | — | — | Penetration test remediation, fuzzing, secret scrubbing, sandbox isolation. |
 | 14 | Perf | NOT_STARTED | — | — | Criterion benchmark deltas, profiling, latency optimization (p99/p99.9). |
 | 15 | Load/stress | NOT_STARTED | — | — | End-to-end stress testing, concurrency thresholds, degradation behavior. |
@@ -101,10 +101,16 @@
 | **TASK-027** | Implement worker supervisor, graceful shutdown coordination, and integration with `edge-events` | **DONE** | 2026-10-02 |
 
 ### Phase 11 — ML Training
+| Task ID | Goal | Status | Completed |
+|---|---|---|---|
+| **TASK-028** | Define ML feature schema, training dataset generator, and pipeline matching Rust `edge-features` | **DONE** | 2026-10-02 |
+| **TASK-029** | Build fraud classification model training script, validation evaluation, and ONNX export | **DONE** | 2026-10-02 |
+
+### Phase 12 — Rust Inference
 | Task ID | Goal | Status | Assigned |
 |---|---|---|---|
-| **TASK-028** | Define ML feature schema, training dataset generator, and pipeline matching Rust `edge-features` | **IN_PROGRESS** | Implementer |
-| **TASK-029** | Build fraud classification model training script, validation evaluation, and ONNX export | NOT_STARTED | — |
+| **TASK-030** | Create `crates/edge-ml` crate with model manifest / ONNX parser, decision tree inference engine, and risk score emitter | **IN_PROGRESS** | Implementer |
+| **TASK-031** | Integrate `edge-ml` into `edge-decision` pipeline and validate parity with Python golden inferences | NOT_STARTED | — |
 
 ---
 
@@ -119,6 +125,8 @@
 - **2026-10-02**: Completed Phase 8 (TASK-022, TASK-023).
 - **2026-10-02**: Completed Phase 9 (TASK-024, TASK-025).
 - **2026-10-02**: Completed Phase 10 (TASK-026, TASK-027).
-- **2026-10-02**: Phase 11 (ML Training) activated; TASK-028 assigned.
+- **2026-10-02**: Completed Phase 11 (TASK-028, TASK-029).
+- **2026-10-02**: Phase 12 (Rust Inference) activated; TASK-030 assigned.
+
 
 
