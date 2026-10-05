@@ -1,7 +1,9 @@
 [advisories]
 unmaintained = "workspace"
 unsound = "all"
-ignore = []
+ignore = [
+    "RUSTSEC-2023-0071", # Marvin Attack in rsa (used by sqlx-postgres, no upstream patch available)
+]
 
 [licenses]
 allow = [

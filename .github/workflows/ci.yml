@@ -55,11 +55,8 @@ jobs:
         run: cargo test --test golden
 
   security:
-    name: Security & License Audit (cargo deny / audit)
+    name: Security & License Audit (cargo deny)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: EmbarkStudios/cargo-deny-action@v2
-      - uses: rustsec/audit-check@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
