@@ -1,26 +1,30 @@
-# Production Docker Compose specification for EdgeArena
+# CapitalCore Production Full-Stack Container (PostgreSQL 15 + Rust API + Next.js Web)
 version: "3.8"
 
 services:
-  edge-api:
+  capitalcore:
     build:
       context: .
-      dockerfile: Dockerfile
-    image: edgearena/edge-api:latest
-    container_name: edge-api-prod
+      dockerfile: Dockerfile.all-in-one
+    image: capitalcore-all-in-one:latest
+    container_name: capitalcore-unified-prod
     restart: always
     ports:
-      - "8080:8080"
+      - "3001:3001"
+      - "8001:8001"
     environment:
       APP_ENV: production
-      PORT: 8080
+      PORT: 8001
+      WEB_PORT: 3001
       HOST: 0.0.0.0
-      RUST_LOG: info,edge_api=debug,edge_decision=info
-      DATABASE_URL: postgres://edgearena:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@postgres:5432/edgearena_prod
-      JWT_SECRET_SEED: ${JWT_SECRET_SEED:?set JWT_SECRET_SEED (64 hex chars)}
-    depends_on:
-      postgres:
-        condition: service_healthy
+      RUST_LOG: info,edge_api=info,edge_decision=info
+      JWT_SECRET_SEED: ${JWT_SECRET_SEED:-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef}
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "http://127.0.0.1:8001/health/liveness"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
     deploy:
       resources:
         limits:
@@ -29,34 +33,3 @@ services:
         reservations:
           cpus: "1.0"
           memory: 1024M
-    healthcheck:
-      test: ["CMD", "/usr/local/bin/edge-api", "--healthcheck"]
-      interval: 10s
-      timeout: 3s
-      retries: 3
-      start_period: 5s
-
-  postgres:
-    image: postgres:16-alpine
-    container_name: edge-postgres-prod
-    restart: always
-    environment:
-      POSTGRES_USER: edgearena
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
-      POSTGRES_DB: edgearena_prod
-    volumes:
-      - edge_pgdata_prod:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U edgearena -d edgearena_prod"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    deploy:
-      resources:
-        limits:
-          cpus: "2.0"
-          memory: 2048M
-
-volumes:
-  edge_pgdata_prod:
-    driver: local

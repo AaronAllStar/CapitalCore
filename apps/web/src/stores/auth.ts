@@ -57,11 +57,7 @@ export const useAuthStore = create<AuthState>()(
 
       logout: () => {
         setExplicitToken(null);
-        set({
-          user: null,
-          token: null,
-          isAuthenticated: false,
-        });
+        get().fetchSession().catch(() => {});
       },
     }),
     {

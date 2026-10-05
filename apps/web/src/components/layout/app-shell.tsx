@@ -1,27 +1,19 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
-  const { isAuthenticated, fetchSession } = useAuthStore();
+  const { fetchSession } = useAuthStore();
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.push("/login");
-      return;
-    }
-    fetchSession();
-  }, [isAuthenticated]);
-
-  if (!isAuthenticated) return null;
+    fetchSession().catch(() => {});
+  }, [fetchSession]);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-slate-950 text-slate-100">
       <Sidebar />
       <div className="pl-64">
         <Header />
