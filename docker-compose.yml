@@ -1,6 +1,5 @@
 # CapitalCore Banking Decision & Fraud Operations Platform
 # Unified Full-Stack Stack (PostgreSQL 15 + Rust Core API + Next.js Web Console)
-version: "3.8"
 
 services:
   capitalcore:

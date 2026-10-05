@@ -1,5 +1,4 @@
 # CapitalCore Production Full-Stack Container (PostgreSQL 15 + Rust API + Next.js Web)
-version: "3.8"
 
 services:
   capitalcore:
