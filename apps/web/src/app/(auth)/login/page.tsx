@@ -1,80 +1,99 @@
 "use client";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { Swords, Eye, EyeOff } from "lucide-react";
+import { ShieldCheck, ArrowRight, Building2, Lock, RotateCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuthStore } from "@/stores/auth";
-import { ApiError } from "@/lib/api";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login } = useAuthStore();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPw, setShowPw] = useState(false);
-  const [error, setError] = useState("");
+  const { loginAsAnalyst, user, isAuthenticated } = useAuthStore();
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError("");
+  useEffect(() => {
+    // If already authenticated, redirect straight to dashboard
+    if (isAuthenticated && user) {
+      router.replace("/dashboard");
+    }
+  }, [isAuthenticated, user, router]);
+
+  async function handleAccess() {
     setLoading(true);
     try {
-      await login(email, password);
+      await loginAsAnalyst();
       router.push("/dashboard");
-    } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Login failed");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/15">
-            <Swords className="h-5 w-5 text-primary" />
+    <div className="flex min-h-screen items-center justify-center p-4 bg-background relative overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-primary/10 via-background to-background" />
+
+      <Card className="w-full max-w-md border-border/80 bg-card/90 backdrop-blur-md shadow-2xl relative z-10">
+        <CardHeader className="text-center pb-4">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/15 border border-primary/30">
+            <Building2 className="h-6 w-6 text-primary" />
           </div>
-          <CardTitle className="text-xl">Welcome back</CardTitle>
-          <CardDescription>Sign in to your arena account</CardDescription>
+          <CardTitle className="text-2xl font-bold tracking-tight text-foreground">
+            CapitalCore Operations
+          </CardTitle>
+          <CardDescription className="text-muted-foreground text-xs uppercase tracking-wider font-mono">
+            Enterprise Banking Risk &amp; Fraud Console
+          </CardDescription>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <div className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-red-400">
-                {error}
-              </div>
+
+        <CardContent className="space-y-5">
+          <div className="rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-4 text-xs text-muted-foreground space-y-2">
+            <div className="flex items-center gap-1.5 font-semibold text-emerald-400">
+              <ShieldCheck className="h-4 w-4" />
+              <span>Passwordless Cryptographic Authentication</span>
+            </div>
+            <p className="text-foreground/80 leading-relaxed">
+              Access is pre-authorized for Bank Risk Analysts and Fraud Officers via asymmetric Ed25519 JWT session issuance. Login/Signup por correo y contraseñas tradicionales ha sido desactivado.
+            </p>
+          </div>
+
+          <div className="p-3 rounded-lg border border-border/60 bg-muted/20 space-y-1.5 text-xs font-mono">
+            <div className="flex justify-between text-muted-foreground">
+              <span>Security Context:</span>
+              <span className="text-foreground font-semibold">SOX-404 / Basel III</span>
+            </div>
+            <div className="flex justify-between text-muted-foreground">
+              <span>Default Principal:</span>
+              <span className="text-foreground font-semibold">Lead Risk Analyst</span>
+            </div>
+            <div className="flex justify-between text-muted-foreground">
+              <span>Signature Suite:</span>
+              <span className="text-primary font-semibold">Ed25519 · SHA-256</span>
+            </div>
+          </div>
+
+          <Button
+            type="button"
+            className="w-full h-11 font-semibold flex items-center justify-center gap-2 shadow-lg text-sm bg-primary text-primary-foreground hover:bg-primary/90"
+            onClick={handleAccess}
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <RotateCw className="h-4 w-4 animate-spin" />
+                Estableciendo sesión criptográfica...
+              </>
+            ) : (
+              <>
+                <Lock className="h-4 w-4" />
+                Ingresar a Consola Operativa
+                <ArrowRight className="h-4 w-4 ml-auto" />
+              </>
             )}
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="you@edgearena.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <div className="relative">
-                <Input id="password" type={showPw ? "text" : "password"} placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
-                <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-                  {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
-              </div>
-            </div>
-            <Button
-              type="submit"
-              className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
-              style={{ boxShadow: "0 0 20px rgba(34, 255, 0, 0.3)" }}
-              disabled={loading}
-            >
-              {loading ? "Signing in..." : "Sign in"}
-            </Button>
-          </form>
-          <p className="mt-6 text-center text-sm text-muted-foreground">
-            No account?{" "}
-            <Link href="/register" className="text-accent hover:underline">Create one</Link>
+          </Button>
+
+          <p className="text-center text-[11px] text-muted-foreground font-mono">
+            Audit logging active • Ledger tamper-evident
           </p>
         </CardContent>
       </Card>

@@ -8,14 +8,14 @@ import { Header } from "@/components/layout/header";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const { isAuthenticated, fetchMe } = useAuthStore();
+  const { isAuthenticated, fetchSession } = useAuthStore();
 
   useEffect(() => {
     if (!isAuthenticated) {
       router.push("/login");
       return;
     }
-    fetchMe();
+    fetchSession();
   }, [isAuthenticated]);
 
   if (!isAuthenticated) return null;

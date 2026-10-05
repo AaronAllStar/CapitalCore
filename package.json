@@ -1,5 +1,5 @@
 {
-  "name": "edgearena",
+  "name": "capitalcore",
   "private": true,
   "scripts": {
     "build": "turbo run build",

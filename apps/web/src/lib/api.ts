@@ -1,4 +1,4 @@
-const BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8001";
 
 class ApiError extends Error {
   constructor(
@@ -17,8 +17,34 @@ type RequestOptions = {
   params?: Record<string, string | number | boolean | undefined>;
 };
 
+let cachedToken: string | null = null;
+
+async function getAuthToken(): Promise<string | null> {
+  if (cachedToken) return cachedToken;
+  try {
+    const res = await fetch(`${BASE}/api/v1/auth/session`);
+    if (res.ok) {
+      const data = await res.json();
+      cachedToken = data.access_token || null;
+      return cachedToken;
+    }
+  } catch {
+    // If backend is unreachable or building statically
+  }
+  return null;
+}
+
+export function setExplicitToken(token: string | null) {
+  cachedToken = token;
+}
+
 async function request<T>(method: string, path: string, body?: unknown, opts: RequestOptions = {}): Promise<T> {
-  const url = new URL(`${BASE}/api/v1${path}`);
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  const fullPath = normalizedPath.startsWith("/api/v1") || normalizedPath.startsWith("/health") || normalizedPath.startsWith("/metrics")
+    ? normalizedPath
+    : `/api/v1${normalizedPath}`;
+
+  const url = new URL(`${BASE}${fullPath}`);
 
   if (opts.params) {
     for (const [k, v] of Object.entries(opts.params)) {
@@ -26,14 +52,19 @@ async function request<T>(method: string, path: string, body?: unknown, opts: Re
     }
   }
 
-  const headers: Record<string, string> = {};
+  const headers: Record<string, string> = {
+    Accept: "application/json",
+  };
   if (body) headers["Content-Type"] = "application/json";
-  if (opts.token) headers["Authorization"] = `Bearer ${opts.token}`;
+
+  const token = opts.token !== undefined ? opts.token : await getAuthToken();
+  if (token) headers["Authorization"] = `Bearer ${token}`;
 
   const res = await fetch(url.toString(), {
     method,
     headers,
     body: body ? JSON.stringify(body) : undefined,
+    cache: "no-store",
   });
 
   if (res.status === 204) return undefined as T;
@@ -44,8 +75,8 @@ async function request<T>(method: string, path: string, body?: unknown, opts: Re
     const error = data?.error || {};
     throw new ApiError(
       res.status,
-      error.code || "UNKNOWN",
-      error.message || res.statusText,
+      error.code || "ERR_HTTP",
+      typeof error === "string" ? error : error.message || res.statusText,
       error.details
     );
   }

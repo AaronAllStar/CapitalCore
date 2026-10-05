@@ -2,7 +2,7 @@
 # Multi-stage production build for EdgeArena Rust Core Decision Platform
 
 # --- Stage 1: Build stage ---
-FROM rust:1.80-bullseye AS builder
+FROM rust:1-bookworm AS builder
 
 WORKDIR /app
 

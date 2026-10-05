@@ -1,136 +1,122 @@
-# EdgeArena — Competitive Trading Platform
+# CapitalCore — Real-Time Banking Decision & Fraud Operations Platform
 
-![EdgeArena Banner](https://img.shields.io/badge/EdgeArena-Trading_Platform-blueviolet?style=for-the-badge&logo=rocket)
-![Next.js](https://img.shields.io/badge/Next.js_14-000000?style=flat-square&logo=next.js&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=flat-square&logo=postgresql&logoColor=white)
-![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white)
+![Rust](https://img.shields.io/badge/Rust-000000?style=flat-square&logo=rust&logoColor=white)
+![Next.js](https://img.shields.io/badge/Next.js-14_App_Router-black?style=flat-square&logo=next.js&logoColor=white)
+![Axum](https://img.shields.io/badge/Axum-HTTP_API-blueviolet?style=flat-square)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
 
-EdgeArena is a high-performance, professional-grade platform designed for algorithmic traders to build, test, and compete. It combines a robust Python-based quantitative engine with a sleek, modern React frontend to provide a seamless trading experience.
+CapitalCore is an enterprise-grade banking transaction decision engine and real-time fraud mitigation platform. It produces auditable, deterministic decisions (ALLOW, REVIEW, ESCALATE, BLOCK) across high-volume card, wire, and digital payments by uniting an AST rule engine, real-time sliding-window velocity aggregators, an embedded ML model (99.6% accuracy), and a tamper-evident SHA-256 cryptographic audit ledger.
 
 ---
 
-## Core Features
-
-*   **Strategy Management**: Create, version, and refine trading strategies using an extensible schema.
-*   **High-Performance Backtesting**: Parallelized backtesting engine using Celery and Redis to validate strategies against historical candle data.
-*   **Global Tournaments**: Compete against other traders in real-time or scheduled tournaments to climb the leaderboard.
-*   **Strategy Marketplace**: Buy, sell, or license high-performing strategies in a secure, audited environment.
-*   **Advanced Analytics**: Real-time charts powered by TradingView's Lightweight Charts and quantitative metrics (Sharpe ratio, drawdown, etc.).
-*   **Enterprise Auth & RBAC**: Secure JWT authentication with fine-grained Role-Based Access Control.
-
----
-
-## Technical Architecture
+## System Architecture
 
 ```mermaid
-graph TD
-    A[Web Client - Next.js] <--> B[API Gateway - Nginx]
-    B <--> C[Backend - FastAPI]
-    C <--> D[(PostgreSQL)]
-    C <--> E[(Redis Cache)]
-    C <--> F[Task Queue - Celery]
-    F <--> G[Backtest Workers]
-    G <--> D
-    G <--> E
-    C <--> H[External APIs - CCXT/OpenAI]
+graph LR
+    C[Client / Core Banking] -->|Ed25519 JWT / RBAC| API[CapitalCore API · Axum]
+    API --> T[edge-transactions<br/>validate · dedup · batch]
+    T --> E[edge-events bus]
+    E --> W[edge-workers<br/>retry · DLQ]
+    API --> D[edge-decision]
+    D --> F[edge-features<br/>sliding window velocity]
+    D --> R[edge-rules<br/>AST policy engine]
+    D --> M[edge-ml<br/>embedded model]
+    D --> A[edge-audit<br/>tamper-evident SHA-256]
 ```
 
-### Frontend Stack
-- **Framework**: [Next.js 14](https://nextjs.org/) (App Router)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/) + [Radix UI](https://www.radix-ui.com/)
-- **State Management**: [Zustand](https://github.com/pmndrs/zustand) & [TanStack Query](https://tanstack.com/query/latest)
-- **Charts**: [Lightweight Charts](https://www.tradingview.com/lightweight-charts/)
-- **Validation**: [Zod](https://zod.dev/) + [React Hook Form](https://react-hook-form.com/)
+### Core Subsystems
 
-### Backend Stack
-- **Framework**: [FastAPI](https://fastapi.tiangolo.com/) (Python 3.11+)
-- **ORM**: [SQLAlchemy 2.0](https://www.sqlalchemy.org/) (Async)
-- **Migrations**: [Alembic](https://alembic.sqlalchemy.org/)
-- **Background Jobs**: [Celery](https://docs.celeryq.dev/) + [Redis](https://redis.io/)
-- **Trading Tools**: [CCXT](https://ccxt.com/), [Pandas](https://pandas.pydata.org/), [NumPy](https://numpy.org/)
-- **AI Integration**: [OpenAI SDK](https://github.com/openai/openai-python)
-
----
-
-## Project Structure
-
-```text
-edge-arena/
-├── apps/
-│   ├── api/                # FastAPI Backend Service
-│   │   ├── app/            # Core application logic
-│   │   ├── alembic/        # Database migrations
-│   │   └── tests/          # Pytest suite
-│   └── web/                # Next.js Frontend Application
-│       ├── src/app/        # App Router pages & layouts
-│       └── src/components/ # Reusable UI components
-├── packages/
-│   ├── shared-types/       # Common TypeScript definitions
-│   └── strategy-schema/    # JSON schema for strategy validation
-├── infra/                  # Infrastructure configurations
-│   ├── docker-compose.yml  # Local orchestration
-│   └── nginx/              # Proxy configurations
-└── turbo.json              # Turborepo configuration
-```
-
----
-
-## Getting Started
-
-### Prerequisites
-- **Node.js** v20+ & **pnpm**
-- **Python** 3.11+
-- **Docker** & **Docker Compose**
-
-### Installation
-
-1. **Clone the repository**:
-    ```bash
-    git clone https://github.com/your-org/edge-arena.git
-    cd edge-arena
-    ```
-
-2. **Install dependencies**:
-    ```bash
-    pnpm install
-    ```
-
-3.  **Setup Environment**:
-    Copy `.env.example` to `.env` in both `apps/api` and `apps/web`.
-    ```bash
-    cp apps/api/.env.example apps/api/.env
-    cp apps/web/.env.example apps/web/.env
-    ```
-
-4. **Spin up Infrastructure**:
-    ```bash
-    docker-compose -f infra/docker-compose.yml up -d
-    ```
-
-5. **Run Development Servers**:
-    ```bash
-    pnpm dev
-    ```
-    - Frontend: [http://localhost:3001](http://localhost:3001)
-    - Backend API: [http://localhost:8000](http://localhost:8000)
-    - Documentation: [http://localhost:8000/docs](http://localhost:8000/docs)
-
----
-
-## Development Tasks
-
-| Command | Description |
+| Crate | Responsibility |
 | :--- | :--- |
-| `pnpm dev` | Start all services in development mode |
-| `pnpm build` | Build all services for production |
-| `pnpm lint` | Run ESLint and Ruff |
-| `pnpm typecheck` | Run TypeScript validation |
-| `pnpm db:migrate` | Apply latest database migrations |
-| `pnpm db:seed` | Seed the database with sample data |
+| `edge-core`, `edge-domain` | Monetary types and enterprise banking domain model (zero I/O) |
+| `edge-events`, `edge-audit` | Asynchronous event bus and append-only cryptographic audit log |
+| `edge-transactions` | Ingestion, validation, channel normalization, deduplication |
+| `edge-rules`, `edge-features` | AST rule evaluation and real-time sliding-window velocity aggregates |
+| `edge-ml` | Embedded fraud model inference with sub-millisecond execution |
+| `edge-decision` | Orchestration and deterministic policy arbitration |
+| `edge-auth`, `edge-security` | Ed25519 asymmetric JWT, Argon2id, RBAC, secret scrubbing |
+| `edge-storage` | SQLx / PostgreSQL audit repository with fallback buffer |
+| `edge-workers` | Async worker pool, backpressure, exponential backoff, dead-letter queue |
+| `edge-observability`, `edge-bench` | Tracing, Prometheus metrics, benchmark harness |
+| `edge-api` | Axum HTTP REST API service |
+| `apps/web` | Next.js Real-Time Fraud Operations & Decision Stream Console |
+
+---
+
+## API Reference
+
+The CapitalCore API runs on port **8001** (or customizable via `PORT`):
+
+| Method | Route | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/v1/transactions` | Submit transaction for real-time decisioning (ALLOW/REVIEW/ESCALATE/BLOCK) |
+| `GET` | `/api/v1/decisions` | Stream recent decisions with status/channel filtering |
+| `GET` | `/api/v1/decisions/stats` | Ingestion KPIs, block rates, escalation rates, and processed volumes |
+| `GET` | `/api/v1/decisions/:id` | Detailed inspection of transaction decision, rules fired, and features |
+| `GET` | `/api/v1/audit` | Recent tamper-evident audit records |
+| `GET` | `/api/v1/audit/verify` | Verify cryptographic SHA-256 hash chain integrity |
+| `GET` | `/api/v1/model` | Active ML model card, accuracy metrics, and feature catalog |
+| `GET` | `/api/v1/auth/session` | Mint authenticated Ed25519 JWT session for Bank Risk Analyst |
+| `GET` | `/health/liveness` | Service liveness probe |
+| `GET` | `/health/readiness` | Service readiness probe |
+| `GET` | `/metrics` | Prometheus telemetry |
+| `GET` | `/openapi.json` | OpenAPI 3.0 specification |
+
+---
+
+## Local Execution & Development
+
+### Standard Ports
+- **Frontend Web UI**: `http://localhost:3001`
+- **Rust Core API**: `http://localhost:8001`
+
+### Running with Docker (All-In-One Unified Container)
+
+Both the Rust Decision Engine and the Next.js Web Console can be launched together in a single container:
+
+```bash
+# Build the unified image
+docker build -f Dockerfile.all-in-one -t capitalcore-all-in-one .
+
+# Run container on ports 3001 (Web) and 8001 (API)
+docker run -d --name capitalcore-unified \
+  -p 3001:3001 \
+  -p 8001:8001 \
+  -e JWT_SECRET_SEED=$(openssl rand -hex 32) \
+  capitalcore-all-in-one
+```
+
+Once running:
+- **Operations Console**: [http://localhost:3001](http://localhost:3001)
+- **Decision Engine API**: [http://localhost:8001/api/v1/decisions/stats](http://localhost:8001/api/v1/decisions/stats)
+- **Liveness Probe**: [http://localhost:8001/health/liveness](http://localhost:8001/health/liveness)
+
+---
+
+## Deploying Frontend to Vercel
+
+The Next.js web application is located at `apps/web` and ready for instant deployment:
+
+1. **Root Directory**: `apps/web` (pre-configured in root [vercel.json](file:///c:/Users/damed/Downloads/edge-arena/vercel.json)).
+2. **Framework Preset**: Next.js.
+3. **Environment Variables**:
+   - `NEXT_PUBLIC_API_URL`: URL of your deployed CapitalCore Rust API (e.g. `https://api.capitalcore.bank`).
+4. **Deploy**:
+   ```bash
+   vercel
+   ```
+   Or link this repository to your Vercel team dashboard.
+
+---
+
+## Documentation
+
+- [`docs/STATUS.md`](docs/STATUS.md) · Architecture and implementation review
+- [`docs/adr/`](docs/adr) · Architecture Decision Records (Banking Decision Engine pivot)
+- [`docs/benchmarks.md`](docs/benchmarks.md) · Ingestion throughput and latency benchmarks
 
 ---
 
 ## License
-© 2026 EdgeArena. All rights reserved.
+
+© 2026 CapitalCore Financial Technologies. All rights reserved.

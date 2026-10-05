@@ -16,8 +16,8 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "EdgeArena — Build. Test. Compete.",
-  description: "Competitive trading strategy platform. Build strategies, run backtests, compete in tournaments.",
+  title: "CapitalCore — Real-Time Banking Decision & Fraud Operations",
+  description: "Enterprise banking transaction decisioning, real-time fraud mitigation, and cryptographic audit log console.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

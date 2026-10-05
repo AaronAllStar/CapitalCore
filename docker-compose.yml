@@ -17,11 +17,12 @@ services:
       HOST: 0.0.0.0
       RUST_LOG: info,edge_api=debug,edge_decision=info
       DATABASE_URL: postgres://edgearena:edgearena@postgres:5432/edgearena
+      JWT_SECRET_SEED: ${JWT_SECRET_SEED:-0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef}
     depends_on:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health/liveness"]
+      test: ["CMD", "/usr/local/bin/edge-api", "--healthcheck"]
       interval: 10s
       timeout: 3s
       retries: 3

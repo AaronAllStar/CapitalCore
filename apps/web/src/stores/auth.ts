@@ -1,109 +1,72 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { api } from "@/lib/api";
-
-export interface UserProfile {
-  id: string;
-  email: string;
-  username: string;
-  display_name: string | null;
-  avatar_url: string | null;
-  bio: string | null;
-  plan: string;
-  rating: number;
-  peak_rating: number;
-  total_wins: number;
-  total_losses: number;
-  total_tournaments: number;
-  total_backtests: number;
-  is_active: boolean;
-  email_verified: boolean;
-  created_at: string;
-}
-
-export interface TokenPair {
-  access_token: string;
-  refresh_token: string;
-  expires_in: number;
-}
+import { api, setExplicitToken } from "@/lib/api";
+import { UserProfile } from "@/types";
 
 interface AuthState {
   user: UserProfile | null;
-  tokens: TokenPair | null;
+  token: string | null;
   isAuthenticated: boolean;
+  isLoading: boolean;
 
-  login: (email: string, password: string) => Promise<void>;
-  register: (email: string, username: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
-  refresh: () => Promise<void>;
-  fetchMe: () => Promise<void>;
+  fetchSession: () => Promise<void>;
+  loginAsAnalyst: () => Promise<void>;
+  logout: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
-      user: null,
-      tokens: null,
-      isAuthenticated: false,
-
-      login: async (email, password) => {
-        const data = await api.post<{ user: UserProfile; tokens: TokenPair }>(
-          "/auth/login", { email, password }
-        );
-        set({ user: data.user, tokens: data.tokens, isAuthenticated: true });
+      user: {
+        id: "0e8224c9-1c1b-4fd1-a2d5-e092967453a5",
+        name: "Lead Risk Analyst",
+        email: "analyst@capitalcore.bank",
+        role: "Risk & Compliance Officer",
+        department: "Global Fraud Operations",
+        permissions: [
+          "events:read",
+          "events:write",
+          "decisions:read",
+          "rules:read",
+          "audit:read",
+        ],
       },
+      token: null,
+      isAuthenticated: true,
+      isLoading: false,
 
-      register: async (email, username, password) => {
-        const data = await api.post<{ user: UserProfile; tokens: TokenPair }>(
-          "/auth/register", { email, username, password }
-        );
-        set({ user: data.user, tokens: data.tokens, isAuthenticated: true });
-      },
-
-      logout: async () => {
-        const { tokens } = get();
+      fetchSession: async () => {
         try {
-          if (tokens?.refresh_token) {
-            await api.post("/auth/logout", { refresh_token: tokens.refresh_token });
-          }
-        } catch {}
-        set({ user: null, tokens: null, isAuthenticated: false });
-      },
-
-      refresh: async () => {
-        const { tokens } = get();
-        if (!tokens?.refresh_token) return;
-        try {
-          const newTokens = await api.post<TokenPair>(
-            "/auth/refresh", { refresh_token: tokens.refresh_token }
-          );
-          set({ tokens: newTokens });
+          set({ isLoading: true });
+          const data = await api.get<{ access_token: string; user: UserProfile }>("/auth/session");
+          setExplicitToken(data.access_token);
+          set({
+            token: data.access_token,
+            user: data.user,
+            isAuthenticated: true,
+            isLoading: false,
+          });
         } catch {
-          set({ user: null, tokens: null, isAuthenticated: false });
+          set({ isLoading: false });
         }
       },
 
-      fetchMe: async () => {
-        const { tokens } = get();
-        if (!tokens?.access_token) return;
-        try {
-          const user = await api.get<UserProfile>("/auth/me", { token: tokens.access_token });
-          set({ user });
-        } catch (e: any) {
-          if (e.status === 401) {
-            await get().refresh();
-            const newTokens = get().tokens;
-            if (newTokens?.access_token) {
-              const user = await api.get<UserProfile>("/auth/me", { token: newTokens.access_token });
-              set({ user });
-            }
-          }
-        }
+      loginAsAnalyst: async () => {
+        await get().fetchSession();
+      },
+
+      logout: () => {
+        setExplicitToken(null);
+        set({
+          user: null,
+          token: null,
+          isAuthenticated: false,
+        });
       },
     }),
     {
-      name: "edgearena-auth",
-      partialize: (s) => ({ tokens: s.tokens, user: s.user, isAuthenticated: s.isAuthenticated }),
+      name: "capitalcore-auth",
+      partialize: (s) => ({ token: s.token, user: s.user, isAuthenticated: s.isAuthenticated }),
     }
   )
 );

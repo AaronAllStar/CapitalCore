@@ -81,6 +81,9 @@ fn setup_stress_environment() -> (AppState, Arc<JwtKeyPair>, Arc<InMemoryAuditLo
         authorizer,
         ingestion_pipeline: ingestion,
         decision_service: decision,
+        audit_log: audit.clone(),
+        recent_decisions: Arc::new(edge_api::RecentDecisions::new()),
+        active_rules_count: 1,
     };
 
     (state, keypair, audit)

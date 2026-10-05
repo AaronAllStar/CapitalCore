@@ -6,15 +6,25 @@
 #![deny(unsafe_code)]
 #![warn(missing_docs)]
 
+/// Authentication and JWT extractors.
 pub mod auth;
+/// Live in-memory decision store.
+pub mod decision_store;
+/// HTTP route handlers.
 pub mod handlers;
+/// OpenAPI 3.0 specification.
 pub mod openapi;
+/// Axum router assembly.
 pub mod router;
+/// Transaction submission route.
 pub mod transaction;
 
 pub use auth::{authenticate_header, AuthenticatedUser};
+pub use decision_store::{DecisionStats, RecentDecisions, StoredDecision};
 pub use handlers::{
-    liveness_handler, metrics_handler, openapi_handler, readiness_handler, AppState,
+    get_audit_records_handler, get_decision_by_id_handler, get_decision_stats_handler,
+    get_decisions_handler, get_demo_token_handler, get_model_info_handler, liveness_handler,
+    metrics_handler, openapi_handler, readiness_handler, verify_audit_integrity_handler, AppState,
 };
 pub use openapi::generate_openapi_spec;
 pub use router::build_router;
@@ -48,7 +58,7 @@ mod tests {
 
         let features = Arc::new(FeatureEngine::default());
         let rules = Arc::new(RuleEngine::new());
-        let decision = Arc::new(DecisionService::new(features, rules, audit));
+        let decision = Arc::new(DecisionService::new(features, rules, audit.clone()));
 
         let state = AppState {
             health_registry: Arc::new(HealthRegistry::new()),
@@ -57,6 +67,9 @@ mod tests {
             authorizer,
             ingestion_pipeline: ingestion,
             decision_service: decision,
+            audit_log: audit,
+            recent_decisions: Arc::new(RecentDecisions::new()),
+            active_rules_count: 4,
         };
 
         (state, keypair)

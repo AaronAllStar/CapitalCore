@@ -16,7 +16,8 @@ services:
       PORT: 8080
       HOST: 0.0.0.0
       RUST_LOG: info,edge_api=debug,edge_decision=info
-      DATABASE_URL: postgres://edgearena:edgearena_secure_prod_pass@postgres:5432/edgearena_prod
+      DATABASE_URL: postgres://edgearena:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}@postgres:5432/edgearena_prod
+      JWT_SECRET_SEED: ${JWT_SECRET_SEED:?set JWT_SECRET_SEED (64 hex chars)}
     depends_on:
       postgres:
         condition: service_healthy
@@ -29,7 +30,7 @@ services:
           cpus: "1.0"
           memory: 1024M
     healthcheck:
-      test: ["CMD", "/usr/local/bin/edge-api", "--version"]
+      test: ["CMD", "/usr/local/bin/edge-api", "--healthcheck"]
       interval: 10s
       timeout: 3s
       retries: 3
@@ -41,10 +42,8 @@ services:
     restart: always
     environment:
       POSTGRES_USER: edgearena
-      POSTGRES_PASSWORD: edgearena_secure_prod_pass
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
       POSTGRES_DB: edgearena_prod
-    ports:
-      - "5432:5432"
     volumes:
       - edge_pgdata_prod:/var/lib/postgresql/data
     healthcheck:

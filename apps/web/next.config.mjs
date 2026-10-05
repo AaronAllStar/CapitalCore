@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  output: "standalone",
+  output: process.env.DOCKER_BUILD ? "standalone" : undefined,
   transpilePackages: ["@edgearena/shared-types"],
   images: {
     remotePatterns: [
